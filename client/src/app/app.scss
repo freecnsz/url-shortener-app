@@ -331,6 +331,22 @@ body, .landing-bg {
   transform: scale(1.12) rotate(-6deg);
 }
 
+.footer-contributors {
+  color: var(--color-text-light);
+  font-size: 1rem;
+  margin-left: auto;
+  margin-right: 0;
+  a {
+    color: var(--color-secondary);
+    text-decoration: underline;
+    font-weight: 500;
+    transition: color 0.18s;
+  }
+  a:hover, a:focus {
+    color: var(--color-accent);
+  }
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
   .navbar-inner {
@@ -370,6 +386,12 @@ body, .landing-bg {
   }
   .dev-avatar {
     margin-bottom: 0.5rem;
+  }
+  .footer-contributors {
+    margin: 0.5rem 0 0 0;
+    width: 100%;
+    text-align: left;
+    font-size: 0.98rem;
   }
   .landing-bg, .hero, .demo-animation, .about-dev, .footer {
     max-width: 100vw;
