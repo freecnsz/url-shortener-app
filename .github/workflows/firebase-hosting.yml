@@ -1,0 +1,38 @@
+name: Firebase Hosting Deploy
+
+on:
+  push:
+    branches:
+      - master   # deploy sadece main branch’e push olunca çalışır
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install Angular CLI
+        run: npm install -g @angular/cli
+
+      - name: Install dependencies
+        working-directory: client
+        run: npm ci
+
+      - name: Build Angular project
+        working-directory: client
+        run: ng build --configuration production
+
+      - name: Deploy to Firebase Hosting
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          projectId: linkhub-freecnsz
+          channelId: live

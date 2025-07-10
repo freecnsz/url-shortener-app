@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "site": "gitbak-23880",
+    "site": "linkhub-freecnsz",
     "public": "client/dist/client/browser",
     "ignore": [
       "firebase.json",
