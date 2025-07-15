@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "AuthProvider" AS ENUM ('LOCAL', 'GOOGLE', 'GITHUB', 'FACEBOOK');
+CREATE TYPE "AuthProvider" AS ENUM ('LOCAL', 'GOOGLE');
 
 -- CreateEnum
 CREATE TYPE "DeviceType" AS ENUM ('MOBILE', 'DESKTOP', 'TABLET', 'UNKNOWN');
