@@ -29,4 +29,68 @@ export class User {
     public urls?: Url[],
     public refreshTokens?: RefreshToken[]
   ) {}
+
+  /**
+   * Factory method for creating a local user (email/password registration)
+   * ID generation infrastructure layer'da yapılacak
+   */
+  static createLocal(data: {
+    id: string; // ID'yi dışarıdan alıyoruz
+    username?: string;
+    email: string;
+    passwordHash: string;
+    fullName?: string;
+  }): User {
+    return new User(
+      data.id,
+      data.username ?? null, // username optional
+      data.email,
+      data.passwordHash,
+      AuthProvider.LOCAL,
+      undefined, // authProviderId
+      data.fullName,
+      undefined, // profilePictureUrl
+      undefined, // bio
+      false, // isEmailVerified
+      undefined, // emailVerificationToken
+      undefined, // emailVerificationTokenExpiry
+      true, // isActive
+      undefined, // passwordResetToken
+      undefined, // passwordResetTokenExpiry
+      undefined, // lastLoginAt
+      new Date(), // createdAt
+      new Date()  // updatedAt
+    );
+  }
+
+  static createOAuth(data: {
+    username: null;
+    id: string; // ID'yi dışarıdan alıyoruz
+    email: string;
+    fullName?: string;
+    profilePictureUrl?: string;
+    authProvider: AuthProvider;
+    authProviderId: string;
+  }): User {
+    return new User(
+      data.id,
+      data.username ?? null, // username optional
+      data.email,
+      undefined, // passwordHash
+      data.authProvider,
+      data.authProviderId,
+      data.fullName,
+      data.profilePictureUrl,
+      undefined, // bio
+      true, // isEmailVerified
+      undefined, // emailVerificationToken
+      undefined, // emailVerificationTokenExpiry
+      true, // isActive
+      undefined, // passwordResetToken
+      undefined, // passwordResetTokenExpiry
+      undefined, // lastLoginAt
+      new Date(), // createdAt
+      new Date()  // updatedAt
+    );
+  }
 }
