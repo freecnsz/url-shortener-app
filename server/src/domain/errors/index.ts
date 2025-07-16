@@ -3,3 +3,7 @@ export { ValidationError } from './ValidationError';
 export { NotFoundError } from './NotFoundError';
 export { UserAlreadyExistsError } from './UserAlreadyExistsError';
 export { UsernameAlreadyExistsError } from './UsernameAlreadyExistsError';
+export { InvalidCredentialsError } from './InvalidCredentialsError';
+export { AuthenticationError } from './AuthenticationError';
+export { TokenExpiredError } from './TokenExpiredError';
+export { InvalidTokenError } from './InvalidTokenError';

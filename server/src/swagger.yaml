@@ -87,31 +87,7 @@ components:
           nullable: true
           example: null
     
-    LoginRequest:
-      type: object
-      required:
-        - email
-        - password
-      properties:
-        email:
-          type: string
-          format: email
-          example: john@example.com
-        password:
-          type: string
-          example: "123456"
-    
-    LoginResponse:
-      type: object
-      properties:
-        accessToken:
-          type: string
-          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-        refreshToken:
-          type: string
-          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-        user:
-          $ref: '#/components/schemas/CreateUserResponse'
+
     
     RefreshTokenRequest:
       type: object
