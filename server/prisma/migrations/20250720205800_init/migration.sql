@@ -18,7 +18,8 @@ CREATE TABLE "users" (
     "passwordHash" TEXT,
     "provider" "AuthProvider" NOT NULL DEFAULT 'LOCAL',
     "providerId" VARCHAR(100),
-    "fullName" VARCHAR(100),
+    "firstName" VARCHAR(50),
+    "lastName" VARCHAR(50),
     "profilePictureUrl" TEXT,
     "bio" TEXT,
     "isEmailVerified" BOOLEAN NOT NULL DEFAULT false,
@@ -48,24 +49,36 @@ CREATE TABLE "collections" (
 );
 
 -- CreateTable
-CREATE TABLE "urls" (
+CREATE TABLE "custom_domains" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
+    "domain" TEXT NOT NULL,
+    "isVerified" BOOLEAN NOT NULL DEFAULT false,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "custom_domains_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "urls" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT,
     "originalUrl" TEXT NOT NULL,
-    "shortCode" VARCHAR(100) NOT NULL,
-    "customPrefix" VARCHAR(100),
-    "qrCodeUrl" TEXT,
-    "name" VARCHAR(100),
-    "displayText" TEXT,
-    "title" VARCHAR(255),
-    "description" TEXT,
+    "shortCode" VARCHAR(20) NOT NULL,
+    "customAlias" VARCHAR(50),
+    "customDomainId" TEXT,
     "collectionId" TEXT,
+    "name" VARCHAR(255),
+    "description" TEXT,
     "clickCount" INTEGER NOT NULL DEFAULT 0,
     "lastClickedAt" TIMESTAMP(3),
     "expiresAt" TIMESTAMP(3),
+    "maxClicks" INTEGER,
     "isActive" BOOLEAN NOT NULL DEFAULT true,
     "isPasswordProtected" BOOLEAN NOT NULL DEFAULT false,
-    "password" VARCHAR(255),
+    "passwordHash" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -74,7 +87,7 @@ CREATE TABLE "urls" (
 
 -- CreateTable
 CREATE TABLE "click_logs" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "urlId" TEXT NOT NULL,
     "clickedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "ipAddress" VARCHAR(45),
@@ -96,11 +109,15 @@ CREATE TABLE "refresh_tokens" (
     "token" VARCHAR(512) NOT NULL,
     "expiresAt" TIMESTAMP(3) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "lastUsedAt" TIMESTAMP(3),
     "revokedAt" TIMESTAMP(3),
     "replacedByToken" VARCHAR(512),
-    "deviceInfo" VARCHAR(255),
     "ipAddress" VARCHAR(45),
     "userAgent" TEXT,
+    "deviceInfo" VARCHAR(255),
+    "deviceFingerprint" VARCHAR(128),
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
+    "usageCount" INTEGER NOT NULL DEFAULT 0,
 
     CONSTRAINT "refresh_tokens_pkey" PRIMARY KEY ("id")
 );
@@ -115,28 +132,52 @@ CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 CREATE INDEX "users_email_idx" ON "users"("email");
 
 -- CreateIndex
-CREATE INDEX "users_username_idx" ON "users"("username");
+CREATE INDEX "users_provider_idx" ON "users"("provider");
+
+-- CreateIndex
+CREATE INDEX "users_providerId_idx" ON "users"("providerId");
+
+-- CreateIndex
+CREATE INDEX "users_isActive_idx" ON "users"("isActive");
 
 -- CreateIndex
 CREATE INDEX "collections_userId_idx" ON "collections"("userId");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "custom_domains_domain_key" ON "custom_domains"("domain");
+
+-- CreateIndex
+CREATE INDEX "custom_domains_userId_idx" ON "custom_domains"("userId");
+
+-- CreateIndex
+CREATE INDEX "custom_domains_domain_idx" ON "custom_domains"("domain");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "urls_shortCode_key" ON "urls"("shortCode");
 
 -- CreateIndex
-CREATE INDEX "urls_shortCode_idx" ON "urls"("shortCode");
+CREATE UNIQUE INDEX "urls_customAlias_key" ON "urls"("customAlias");
 
 -- CreateIndex
 CREATE INDEX "urls_userId_idx" ON "urls"("userId");
 
 -- CreateIndex
+CREATE INDEX "urls_shortCode_idx" ON "urls"("shortCode");
+
+-- CreateIndex
+CREATE INDEX "urls_customAlias_idx" ON "urls"("customAlias");
+
+-- CreateIndex
 CREATE INDEX "urls_collectionId_idx" ON "urls"("collectionId");
+
+-- CreateIndex
+CREATE INDEX "urls_customDomainId_shortCode_idx" ON "urls"("customDomainId", "shortCode");
 
 -- CreateIndex
 CREATE INDEX "urls_expiresAt_idx" ON "urls"("expiresAt");
 
 -- CreateIndex
-CREATE INDEX "urls_isActive_idx" ON "urls"("isActive");
+CREATE INDEX "urls_userId_isActive_idx" ON "urls"("userId", "isActive");
 
 -- CreateIndex
 CREATE INDEX "click_logs_urlId_idx" ON "click_logs"("urlId");
@@ -145,19 +186,31 @@ CREATE INDEX "click_logs_urlId_idx" ON "click_logs"("urlId");
 CREATE INDEX "click_logs_clickedAt_idx" ON "click_logs"("clickedAt");
 
 -- CreateIndex
+CREATE INDEX "click_logs_urlId_clickedAt_idx" ON "click_logs"("urlId", "clickedAt");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "refresh_tokens_token_key" ON "refresh_tokens"("token");
 
 -- CreateIndex
 CREATE INDEX "refresh_tokens_token_idx" ON "refresh_tokens"("token");
 
 -- CreateIndex
-CREATE INDEX "refresh_tokens_userId_idx" ON "refresh_tokens"("userId");
+CREATE INDEX "refresh_tokens_userId_isActive_expiresAt_idx" ON "refresh_tokens"("userId", "isActive", "expiresAt");
+
+-- CreateIndex
+CREATE INDEX "refresh_tokens_expiresAt_idx" ON "refresh_tokens"("expiresAt");
 
 -- AddForeignKey
 ALTER TABLE "collections" ADD CONSTRAINT "collections_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "urls" ADD CONSTRAINT "urls_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "custom_domains" ADD CONSTRAINT "custom_domains_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "urls" ADD CONSTRAINT "urls_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "urls" ADD CONSTRAINT "urls_customDomainId_fkey" FOREIGN KEY ("customDomainId") REFERENCES "custom_domains"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "urls" ADD CONSTRAINT "urls_collectionId_fkey" FOREIGN KEY ("collectionId") REFERENCES "collections"("id") ON DELETE SET NULL ON UPDATE CASCADE;

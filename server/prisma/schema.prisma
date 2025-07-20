@@ -43,32 +43,36 @@ enum OSType {
 
 // Models
 model User {
-  id                         String    @id @default(uuid())
-  username                   String?   @unique @db.VarChar(50)
-  email                      String    @unique @db.VarChar(255)
-  passwordHash               String?   @db.Text
+  id                         String       @id @default(uuid())
+  username                   String?      @unique @db.VarChar(50)
+  email                      String       @unique @db.VarChar(255)
+  passwordHash               String?      @db.Text
   provider                   AuthProvider @default(LOCAL)
-  providerId                 String?   @db.VarChar(100)
-  fullName                   String?   @db.VarChar(100)
-  profilePictureUrl          String?   @db.Text
-  bio                        String?   @db.Text
-  isEmailVerified            Boolean   @default(false)
-  emailVerificationToken     String?   @db.VarChar(255)
+  providerId                 String?      @db.VarChar(100)
+  firstName                  String?      @db.VarChar(50)
+  lastName                   String?      @db.VarChar(50)
+  profilePictureUrl          String?      @db.Text
+  bio                        String?      @db.Text
+  isEmailVerified            Boolean      @default(false)
+  emailVerificationToken     String?      @db.VarChar(255)
   emailVerificationExpiresAt DateTime?
-  isActive                   Boolean   @default(true)
+  isActive                   Boolean      @default(true)
   lastLoginAt                DateTime?
-  passwordResetToken         String?   @db.VarChar(255)
+  passwordResetToken         String?      @db.VarChar(255)
   passwordResetExpiresAt     DateTime?
-  createdAt                  DateTime  @default(now())
-  updatedAt                  DateTime  @updatedAt
+  createdAt                  DateTime     @default(now())
+  updatedAt                  DateTime     @updatedAt
 
   // Relations
   collections   Collection[]
   urls          Url[]
   refreshTokens RefreshToken[]
+  customDomains CustomDomain[]
 
   @@index([email])
-  @@index([username])
+  @@index([provider])
+  @@index([providerId])
+  @@index([isActive])
   @@map("users")
 }
 
@@ -83,48 +87,70 @@ model Collection {
 
   // Relations
   user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  urls Url[]
+  urls Url[] @relation("UrlCollections")
 
   @@index([userId])
   @@map("collections")
 }
 
-model Url {
-  id                 String    @id @default(uuid())
-  userId             String
-  originalUrl        String    @db.Text
-  shortCode          String    @unique @default(cuid()) @db.VarChar(100)
-  customPrefix       String?   @db.VarChar(100)
-  qrCodeUrl          String?   @db.Text
-  name               String?   @db.VarChar(100)
-  displayText        String?   @db.Text
-  title              String?   @db.VarChar(255)
-  description        String?   @db.Text
-  collectionId       String?
-  clickCount         Int       @default(0)
-  lastClickedAt      DateTime?
-  expiresAt          DateTime?
-  isActive           Boolean   @default(true)
-  isPasswordProtected Boolean  @default(false)
-  password           String?   @db.VarChar(255)
-  createdAt          DateTime  @default(now())
-  updatedAt          DateTime  @updatedAt
+model CustomDomain {
+  id         String   @id @default(uuid())
+  userId     String
+  domain     String   @unique
+  isVerified Boolean  @default(false)
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   // Relations
-  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  collection Collection? @relation(fields: [collectionId], references: [id], onDelete: SetNull)
-  clickLogs  ClickLog[]
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  urls Url[]
 
-  @@index([shortCode])
+  // Indexes
   @@index([userId])
+  @@index([domain])
+  @@map("custom_domains")
+}
+
+model Url {
+  id                  String   @id @default(uuid())
+  userId              String?
+  originalUrl         String   @db.Text
+  shortCode           String   @unique @db.VarChar(20)
+  customAlias         String?  @unique @db.VarChar(50)
+  customDomainId      String?
+  collectionId        String?
+  name                String?  @db.VarChar(255)
+  description         String?  @db.Text
+  clickCount          Int      @default(0)
+  lastClickedAt       DateTime?
+  expiresAt           DateTime?
+  maxClicks           Int?
+  isActive            Boolean  @default(true)
+  isPasswordProtected Boolean  @default(false)
+  passwordHash        String?  @db.Text
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  // Relations
+  user         User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  customDomain CustomDomain? @relation(fields: [customDomainId], references: [id], onDelete: SetNull)
+  collection   Collection?   @relation("UrlCollections", fields: [collectionId], references: [id], onDelete: SetNull)
+  clickLogs    ClickLog[]
+
+  // Indexes
+  @@index([userId])
+  @@index([shortCode])
+  @@index([customAlias])
   @@index([collectionId])
+  @@index([customDomainId, shortCode])
   @@index([expiresAt])
-  @@index([isActive])
+  @@index([userId, isActive])
   @@map("urls")
 }
 
 model ClickLog {
-  id        Int         @id @default(autoincrement())
+  id        String      @id @default(uuid())
   urlId     String
   clickedAt DateTime    @default(now())
   ipAddress String?     @db.VarChar(45)
@@ -141,25 +167,32 @@ model ClickLog {
 
   @@index([urlId])
   @@index([clickedAt])
+  @@index([urlId, clickedAt])
   @@map("click_logs")
 }
 
 model RefreshToken {
-  id               String    @id @default(uuid())
-  userId           String
-  token            String    @unique @db.VarChar(512)
-  expiresAt        DateTime
-  createdAt        DateTime  @default(now())
-  revokedAt        DateTime?
-  replacedByToken  String?   @db.VarChar(512)
-  deviceInfo       String?   @db.VarChar(255)
-  ipAddress        String?   @db.VarChar(45)
-  userAgent        String?   @db.Text
+  id                String    @id @default(uuid())
+  userId            String
+  token             String    @unique @db.VarChar(512)
+  expiresAt         DateTime
+  createdAt         DateTime  @default(now())
+  lastUsedAt        DateTime?
+  revokedAt         DateTime?
+  replacedByToken   String?   @db.VarChar(512)
+  ipAddress         String?   @db.VarChar(45)
+  userAgent         String?   @db.Text
+  deviceInfo        String?   @db.VarChar(255)
+  deviceFingerprint String?   @db.VarChar(128)
+  isActive          Boolean   @default(true)
+  usageCount        Int       @default(0)
 
   // Relations
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  // Indexes
   @@index([token])
-  @@index([userId])
+  @@index([userId, isActive, expiresAt])
+  @@index([expiresAt])
   @@map("refresh_tokens")
 }
