@@ -2,6 +2,7 @@ import { Url } from "url";
 import { AuthProvider } from "../enums/AuthProvider";
 import { Collection } from "./Colleciton";
 import { RefreshToken } from "./RefreshToken";
+import { CustomDomain } from "./CustomDomain";
 
 export class User {
   constructor(
@@ -11,7 +12,8 @@ export class User {
     public passwordHash?: string,
     public provider: AuthProvider = AuthProvider.LOCAL,
     public providerId?: string,
-    public fullName?: string,
+    public firstName?: string,
+    public lastName?: string,
     public profilePictureUrl?: string,
     public bio?: string,
     public isEmailVerified: boolean = false,
@@ -27,7 +29,8 @@ export class User {
     // Navigation Properties
     public collections?: Collection[],
     public urls?: Url[],
-    public refreshTokens?: RefreshToken[]
+    public refreshTokens?: RefreshToken[],
+    public domains?: CustomDomain[],
   ) {}
 
   /**
@@ -35,11 +38,12 @@ export class User {
    * ID generation infrastructure layer'da yapılacak
    */
   static createLocal(data: {
-    id: string; // ID'yi dışarıdan alıyoruz
+    id: string;
     username?: string;
     email: string;
     passwordHash: string;
-    fullName?: string;
+    firstName?: string;
+    lastName?: string;
   }): User {
     return new User(
       data.id,
@@ -48,7 +52,8 @@ export class User {
       data.passwordHash,
       AuthProvider.LOCAL,
       undefined, // authProviderId
-      data.fullName,
+      data.firstName ?? undefined, // firstName
+      data.lastName ?? undefined, // lastName
       undefined, // profilePictureUrl
       undefined, // bio
       false, // isEmailVerified
@@ -58,16 +63,17 @@ export class User {
       undefined, // passwordResetToken
       undefined, // passwordResetTokenExpiry
       undefined, // lastLoginAt
-      new Date(), // createdAt
-      new Date()  // updatedAt
+      new Date(Date.now()), // createdAt
+      new Date(Date.now())  // updatedAt
     );
   }
 
   static createOAuth(data: {
     username: null;
-    id: string; // ID'yi dışarıdan alıyoruz
+    id: string;
     email: string;
-    fullName?: string;
+    firstName?: string;
+    lastName?: string;
     profilePictureUrl?: string;
     authProvider: AuthProvider;
     authProviderId: string;
@@ -79,7 +85,8 @@ export class User {
       undefined, // passwordHash
       data.authProvider,
       data.authProviderId,
-      data.fullName,
+      data.firstName ?? undefined,
+      data.lastName ?? undefined,
       data.profilePictureUrl,
       undefined, // bio
       true, // isEmailVerified
@@ -89,8 +96,8 @@ export class User {
       undefined, // passwordResetToken
       undefined, // passwordResetTokenExpiry
       undefined, // lastLoginAt
-      new Date(), // createdAt
-      new Date()  // updatedAt
+      new Date(Date.now()), // createdAt
+      new Date(Date.now())  // updatedAt
     );
   }
 }
