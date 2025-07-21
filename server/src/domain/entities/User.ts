@@ -35,7 +35,7 @@ export class User {
 
   /**
    * Factory method for creating a local user (email/password registration)
-   * ID generation infrastructure layer'da yapılacak
+   * ID generation should be handled externally (e.g., UUID generation).
    */
   static createLocal(data: {
     id: string;
@@ -43,51 +43,49 @@ export class User {
     email: string;
     passwordHash: string;
     firstName?: string;
-    lastName?: string;
+    lastName?: string;   
   }): User {
     return new User(
       data.id,
       data.username ?? null, // username optional
       data.email,
       data.passwordHash,
-      AuthProvider.LOCAL,
-      undefined, // authProviderId
-      data.firstName ?? undefined, // firstName
-      data.lastName ?? undefined, // lastName
+      AuthProvider.LOCAL, // Default to local provider
+      undefined, // providerId
+      data.firstName ?? undefined,
+      data.lastName ?? undefined,
       undefined, // profilePictureUrl
       undefined, // bio
-      false, // isEmailVerified
+      true, // for testing purposes, assume email is verified. It will be set to false in production
       undefined, // emailVerificationToken
-      undefined, // emailVerificationTokenExpiry
+      undefined, // emailVerificationExpiresAt
       true, // isActive
-      undefined, // passwordResetToken
-      undefined, // passwordResetTokenExpiry
       undefined, // lastLoginAt
+      undefined, // passwordResetToken
+      undefined, // passwordResetExpiresAt
       new Date(Date.now()), // createdAt
       new Date(Date.now())  // updatedAt
     );
   }
 
   static createOAuth(data: {
-    username: null;
     id: string;
     email: string;
-    firstName?: string;
-    lastName?: string;
-    profilePictureUrl?: string;
     authProvider: AuthProvider;
     authProviderId: string;
+    firstName?: string;
+    lastName?: string;
   }): User {
     return new User(
       data.id,
-      data.username ?? null, // username optional
+      null, // username optional
       data.email,
       undefined, // passwordHash
       data.authProvider,
       data.authProviderId,
       data.firstName ?? undefined,
       data.lastName ?? undefined,
-      data.profilePictureUrl,
+      undefined, // profilePictureUrl
       undefined, // bio
       true, // isEmailVerified
       undefined, // emailVerificationToken

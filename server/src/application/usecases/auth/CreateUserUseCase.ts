@@ -35,11 +35,12 @@ export class CreateUserUseCase {
 
     // Create user with factory method
     const user = User.createLocal({
-      id: randomUUID(), // ID generation burada yapılıyor
+      id: randomUUID(), // Generate a new UUID for the user
       username: dto.username?.trim(),
       email: normalizedEmail,
       passwordHash,
-      fullName: dto.fullName?.trim()
+      firstName: dto.firstName?.trim(),
+      lastName: dto.lastName?.trim(),
     });
 
     return await this.userRepository.createAsync(user);

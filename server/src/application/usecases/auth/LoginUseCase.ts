@@ -35,7 +35,7 @@ export class LoginUseCase {
     const token = this.jwtHelper.generateToken({
       userId: user.id,
       email: user.email,
-      username: user.username
+      username: user.username || null,
     });
 
     // Return response using factory method

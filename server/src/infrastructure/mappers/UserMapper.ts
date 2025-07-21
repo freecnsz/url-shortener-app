@@ -10,20 +10,17 @@ export function mapPrismaUserToEntity(data: PrismaUser): User {
     data.passwordHash ?? undefined,
     data.provider as AuthProvider,
     data.providerId ?? undefined,
-    data.fullName ?? undefined,
+    data.firstName ?? undefined,
+    data.lastName ?? undefined,
     data.profilePictureUrl ?? undefined,
     data.bio ?? undefined,
     data.isEmailVerified,
     data.emailVerificationToken ?? undefined,
-    data.emailVerificationExpiresAt
-      ? new Date(data.emailVerificationExpiresAt)
-      : undefined,
+    data.emailVerificationExpiresAt ? new Date(data.emailVerificationExpiresAt) : undefined,
     data.isActive,
     data.lastLoginAt ? new Date(data.lastLoginAt) : undefined,
     data.passwordResetToken ?? undefined,
-    data.passwordResetExpiresAt
-      ? new Date(data.passwordResetExpiresAt)
-      : undefined,
+    data.passwordResetExpiresAt ? new Date(data.passwordResetExpiresAt) : undefined,
     new Date(data.createdAt),
     new Date(data.updatedAt)
   );
@@ -39,7 +36,8 @@ export function mapUserEntityToPrisma(
     passwordHash: user.passwordHash ?? null,
     provider: user.provider,
     providerId: user.providerId ?? null,
-    fullName: user.fullName ?? null,
+    firstName: user.firstName ?? null,
+    lastName: user.lastName ?? null,
     profilePictureUrl: user.profilePictureUrl ?? null,
     bio: user.bio ?? null,
     isEmailVerified: user.isEmailVerified,

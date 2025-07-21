@@ -27,10 +27,4 @@ export class JwtHelper implements IJwtHelper {
       throw new InvalidTokenError();
     }
   }
-
-  generateRefreshToken(payload: object): string {
-    return jwt.sign(payload, this.secretKey, {
-      expiresIn: '7d'
-    });
-  }
 }

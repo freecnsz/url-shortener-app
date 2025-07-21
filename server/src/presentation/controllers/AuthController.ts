@@ -8,7 +8,6 @@ import { responseHelper } from "../../utils/responseHelper";
 import { asyncHandler } from "../middleware/asyncHandler";
 import { loginSchema } from "../../infrastructure/validators/loginSchema";
 import { LoginRequestDto, LoginResponseDto } from "../../application/dtos/auth/LoginDto";
-import { LoginUseCase } from "../../application/usecases/auth/LoginUseCase";
 
 export class AuthController {
   private createUserUseCase = container.getCreateUserUseCase();
@@ -32,8 +31,9 @@ export class AuthController {
       const createUserDto: CreateUserRequestDto = {
         email: validatedData.email,
         password: validatedData.password,
-        username: validatedData.username,
-        fullName: validatedData.fullName ? validatedData.fullName : undefined,
+        username: validatedData.username ? validatedData.username : undefined,
+        firstName: validatedData.firstName ? validatedData.firstName : undefined,
+        lastName: validatedData.lastName ? validatedData.lastName : undefined,
       };
 
       // 3. Execute use case
