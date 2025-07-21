@@ -1,4 +1,5 @@
 import { z } from "zod";
+import fi from "zod/v4/locales/fi.cjs";
 
 /**
  *  POST /api/auth/register  body validation for user registration
@@ -12,13 +13,18 @@ export const createUserSchema = z.object({
     .min(3, "Username must be at least 3 characters long.")
     .max(30, "Username cannot exceed 30 characters.")
     .regex(/^[a-zA-Z0-9_]+$/, "Username can only contain letters, numbers and underscores.")
-    .trim(),
+    .trim()
+    .optional(),
   password: z.string()
-    .min(6, "Password must be at least 6 characters long."),
+    .min(3, "Password must be at least 3 characters long."),
     // .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/, 
     //   "Password must contain at least one uppercase letter, one lowercase letter, one number and one special character."),
-  fullName: z.string()
-    .max(50, "Full name cannot exceed 50 characters.")
+  firstName: z.string()
+    .max(50, "First name cannot exceed 50 characters.")
+    .trim()
+    .optional(),
+  lastName: z.string()
+    .max(50, "Last name cannot exceed 50 characters.")
     .trim()
     .optional(),
 });
