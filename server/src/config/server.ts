@@ -7,6 +7,7 @@ import { QueueManager } from '../infrastructure/queues/QueueManager';
 import { FullShortCodePoolJobHandler } from '../infrastructure/queues/handlers/FullShortCodePoolJobHandler';
 import { ProcessClickJobHandler } from '../infrastructure/queues/handlers/ProcessClickJobHandler';
 import { QueueNames } from '../infrastructure/queues/QueueNames';
+import { ProcessUserLoginJobHandler } from '../infrastructure/queues/handlers/ProcessUserLoginJobHandler';
 
 export const createServer = async (): Promise<express.Application> => {
   const app = express();
@@ -65,6 +66,16 @@ export async function setupQueues() {
     }
   });
   console.log('✅ Process Click Queue registered');
+
+  // 5. Process Login Update Queue - Background login update işlemleri
+  QueueManager.createQueue(QueueNames.ProcessLoginUpdate, new ProcessUserLoginJobHandler(), {
+    concurrency: 5, // Login update işlemleri için yeterli concurrency
+    attempts: 3,
+    backoff: {
+      type: 'exponential',
+      delay: 1000
+    }
+  });
 
   // 5. İlk pool fill job'ını tetikle (server start'ta)
   await triggerInitialPoolFill();
