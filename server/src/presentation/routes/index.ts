@@ -20,6 +20,14 @@ export const setupRoutes = (app: Application): void => {
   app.use("/api/auth", AuthRoutes);
   console.log("🔗 Auth routes setup completed");
 
+  // URL routes
+  const UrlRoutes = require("./url.routes").default;
+  app.use("/api/urls", UrlRoutes);
+  console.log("🔗 URL routes setup completed");
+
+  const redirectRoutes = require("./redirect.routes").default;
+  app.use("/", redirectRoutes);
+
     // 404 handler
   app.use((_req, res) => {
     res.status(404).json({

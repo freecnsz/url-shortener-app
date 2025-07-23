@@ -13,7 +13,7 @@ export interface AuthenticatedRequest extends Request {
 
 export const authMiddleware = (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
   try {
-    // Token'ı header'dan al
+    // Check for the Authorization header
     const authHeader = req.headers.authorization;
     
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -35,7 +35,7 @@ export const authMiddleware = (req: AuthenticatedRequest, res: Response, next: N
 
     const decoded = jwt.verify(token, secret) as any;
     
-    // User bilgisini request'e ekle
+    // Attach user information to the request object
     req.user = {
       userId: decoded.userId,
       email: decoded.email,

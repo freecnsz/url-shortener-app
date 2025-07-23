@@ -1,20 +1,23 @@
 import { Request, Response } from "express";
 import { container } from "../../di/Container";
-import { CreateUserRequestDto, CreateUserRequest } from "../../application/dtos/auth/CreateUserDto";
-import { CreateUserResponseDto } from "../../application/dtos/auth/CreateUserDto";
+import { CreateUserRequestDto } from "../../application/dtos/auth/CreateUserDto";
+import { CreateUserResponseDto } from "../../application/dtos/auth/CreateUserDto"; 
 import { createUserSchema } from "../../infrastructure/validators/CreateUserSchema";
 import { ValidationError } from "../../domain/errors/ValidationError";
 import { responseHelper } from "../../utils/responseHelper";
 import { asyncHandler } from "../middleware/asyncHandler";
 import { loginSchema } from "../../infrastructure/validators/loginSchema";
 import { LoginRequestDto, LoginResponseDto } from "../../application/dtos/auth/LoginDto";
+import { UserMapper } from "../../application/mappers/UserMapper";
+import { OAuthLoginResponseDto } from "../../application/dtos/auth/OAuthLoginDto";
+import { oAuthSchema } from "../../infrastructure/validators/OAuthSchema";
 
 export class AuthController {
   private createUserUseCase = container.getCreateUserUseCase();
   private loginUseCase = container.getLoginUseCase();
 
   public register = asyncHandler(
-    async (req: CreateUserRequest, res: Response) => {
+    async (req: Request, res: Response) => {
       // 1. Validate request body
       const validationResult = createUserSchema.safeParse(req.body);
 
@@ -31,17 +34,19 @@ export class AuthController {
       const createUserDto: CreateUserRequestDto = {
         email: validatedData.email,
         password: validatedData.password,
-        username: validatedData.username ? validatedData.username : undefined,
-        firstName: validatedData.firstName ? validatedData.firstName : undefined,
-        lastName: validatedData.lastName ? validatedData.lastName : undefined,
+        username: validatedData.username || undefined,
+        firstName: validatedData.firstName || undefined,
+        lastName: validatedData.lastName || undefined,
       };
 
       // 3. Execute use case
       const result = await this.createUserUseCase.execute(createUserDto);
 
-      // 4. Return success response with proper status code
-      const responseData = CreateUserResponseDto.fromUser(result);
-      return responseHelper.created<CreateUserResponseDto>(
+      // 4. Map to response DTO
+      const responseData = UserMapper.toCreateUserResponse(result);
+
+      // 5. Return success response
+      return responseHelper.success<CreateUserResponseDto>(
         res,
         responseData,
         "User created successfully"
@@ -71,7 +76,7 @@ export class AuthController {
     // 3. Execute use case
     const result = await this.loginUseCase.execute(loginDto);
 
-    // 4. Return success response with proper status code
+    // 4. Return success response
     return responseHelper.success<LoginResponseDto>(
       res,
       result,
@@ -79,13 +84,31 @@ export class AuthController {
     );
   });
 
-  public logout = asyncHandler(async (req: Request, res: Response) => {
-    // TODO: Implement logout logic
-    responseHelper.error(res, "Logout not implemented yet", 501);
-  });
+  public googleOAuthLoginOrRegister = asyncHandler(
+    async (req: Request, res: Response) => {
+      // 1. Validate request body
+      const validationResult = oAuthSchema.safeParse(req.body);
 
-  public refreshToken = asyncHandler(async (req: Request, res: Response) => {
-    // TODO: Implement refresh token logic
-    responseHelper.error(res, "Refresh token not implemented yet", 501);
-  });
+      if (!validationResult.success) {
+        const errorMessage = validationResult.error.issues
+          .map((err) => `${err.path.join(".")}: ${err.message}`)
+          .join(", ");
+        throw new ValidationError(errorMessage);
+      }
+
+      // 2. Create DTO from validated data
+      const oAuthDto = { accessToken: validationResult.data.accessToken };
+
+      // 3. Execute use case
+      const result = await container.getOAuthGoogleRegisterOrLoginUseCase().execute(oAuthDto);
+
+      // 4. Return success response
+      return responseHelper.success<OAuthLoginResponseDto>(
+        res,
+        result,
+        "Google OAuth login or register successful"
+      );
+    }
+  );
+
 }
