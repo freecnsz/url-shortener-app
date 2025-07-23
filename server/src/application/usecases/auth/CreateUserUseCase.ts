@@ -12,8 +12,11 @@ export class CreateUserUseCase {
   ) {}  
 
   async execute(dto: CreateUserRequestDto): Promise<User> {
-    // Email normalization
+    // Normalize all inputs once
     const normalizedEmail = dto.email.toLowerCase().trim();
+    const normalizedUsername = dto.username?.trim();
+    const normalizedFirstName = dto.firstName?.trim();
+    const normalizedLastName = dto.lastName?.trim();
     
     // Check email exists
     const emailExists = await this.userRepository.findByEmailAsync(normalizedEmail);
@@ -22,8 +25,7 @@ export class CreateUserUseCase {
     }
 
     // Check username exists (if provided)
-    if (dto.username) {
-      const normalizedUsername = dto.username.trim();
+    if (normalizedUsername) {
       const usernameExists = await this.userRepository.findByUsernameAsync(normalizedUsername);
       if (usernameExists) {
         throw new UsernameAlreadyExistsError(normalizedUsername);
@@ -35,12 +37,12 @@ export class CreateUserUseCase {
 
     // Create user with factory method
     const user = User.createLocal({
-      id: randomUUID(), // Generate a new UUID for the user
-      username: dto.username?.trim(),
+      id: randomUUID(),
+      username: normalizedUsername,
       email: normalizedEmail,
       passwordHash,
-      firstName: dto.firstName?.trim(),
-      lastName: dto.lastName?.trim(),
+      firstName: normalizedFirstName,
+      lastName: normalizedLastName,
     });
 
     return await this.userRepository.createAsync(user);
