@@ -1,5 +1,6 @@
 export const QueueNames = {
   FullShortCodePool: 'fullShortCodePoolQueue',
-  ProcessClick: 'processClickQueue'
+  ProcessClick: 'processClickQueue',
+  ProcessLoginUpdate: 'processLoginUpdateQueue',
 };
 export type QueueName = keyof typeof QueueNames;
