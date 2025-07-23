@@ -1,4 +1,4 @@
-import { Request } from 'express';
+import { Request, Response } from 'express';
 
 export interface LoginRequestDto {
   email: string;
@@ -9,9 +9,6 @@ export interface LoginRequest extends Request {
   body: LoginRequestDto;
 }
 
-/** 
- * LoginResponseDto is used to return user data and token after successful login.
- */
 export interface LoginResponseDto {
   user: {
     email: string;
@@ -21,25 +18,6 @@ export interface LoginResponseDto {
   refreshToken?: string;
 }
 
-export class LoginResponseDto {
-  user: {
-    email: string;
-    username: string;
-  };  
-  accessToken: string;
-  refreshToken?: string;
-
-  constructor(user: any, accessToken: string, refreshToken?: string) {
-    this.user = {
-      email: user.email,
-      username: user.username,
-    };
-    this.accessToken = accessToken;
-    this.refreshToken = refreshToken;
-  }
-
-  // Static factory method - this can be used to create an instance from user and token
-  static fromUserAndToken(user: any, accessToken: string, refreshToken?: string): LoginResponseDto {
-    return new LoginResponseDto(user, accessToken, refreshToken);
-  }
+export interface LoginResponse extends Response {
+  body: LoginResponseDto;
 }
