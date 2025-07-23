@@ -10,6 +10,12 @@ CREATE TYPE "BrowserType" AS ENUM ('CHROME', 'FIREFOX', 'SAFARI', 'EDGE', 'OPERA
 -- CreateEnum
 CREATE TYPE "OSType" AS ENUM ('WINDOWS', 'MACOS', 'LINUX', 'ANDROID', 'IOS', 'UNKNOWN');
 
+-- CreateEnum
+CREATE TYPE "ReferrerType" AS ENUM ('DIRECT', 'SEARCH', 'SOCIAL', 'EMAIL', 'REFERRAL', 'UNKNOWN');
+
+-- CreateEnum
+CREATE TYPE "SocialPlatform" AS ENUM ('FACEBOOK', 'TWITTER', 'LINKEDIN', 'INSTAGRAM', 'YOUTUBE', 'TIKTOK', 'UNKNOWN');
+
 -- CreateTable
 CREATE TABLE "users" (
     "id" TEXT NOT NULL,
@@ -91,13 +97,23 @@ CREATE TABLE "click_logs" (
     "urlId" TEXT NOT NULL,
     "clickedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "ipAddress" VARCHAR(45),
-    "userAgent" TEXT,
-    "referrer" TEXT,
     "country" VARCHAR(100),
     "city" VARCHAR(100),
+    "userAgent" TEXT,
     "device" "DeviceType" NOT NULL DEFAULT 'UNKNOWN',
     "browser" "BrowserType" NOT NULL DEFAULT 'UNKNOWN',
     "os" "OSType" NOT NULL DEFAULT 'UNKNOWN',
+    "referrer" TEXT,
+    "referrerType" "ReferrerType" NOT NULL DEFAULT 'UNKNOWN',
+    "utmSource" TEXT,
+    "utmMedium" TEXT,
+    "utmCampaign" TEXT,
+    "socialPlatform" "SocialPlatform" NOT NULL DEFAULT 'UNKNOWN',
+    "fbclid" TEXT,
+    "gclid" TEXT,
+    "isBot" BOOLEAN,
+    "isUniqueVisitor" BOOLEAN,
+    "sessionId" TEXT,
 
     CONSTRAINT "click_logs_pkey" PRIMARY KEY ("id")
 );

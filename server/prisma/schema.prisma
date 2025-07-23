@@ -16,6 +16,7 @@ enum AuthProvider {
   GOOGLE
 }
 
+// DeviceType.prisma
 enum DeviceType {
   MOBILE
   DESKTOP
@@ -23,21 +24,55 @@ enum DeviceType {
   UNKNOWN
 }
 
+// BrowserType.prisma
 enum BrowserType {
   CHROME
   FIREFOX
   SAFARI
   EDGE
   OPERA
+  SAMSUNG_BROWSER
+  MOBILE_SAFARI
+  INTERNET_EXPLORER
+  UC_BROWSER
   UNKNOWN
 }
 
+// OSType.prisma
 enum OSType {
   WINDOWS
   MACOS
   LINUX
   ANDROID
   IOS
+  CHROME_OS
+  UNKNOWN
+}
+
+// ReferrerType.prisma
+enum ReferrerType {
+  DIRECT
+  SEARCH 
+  SOCIAL
+  EMAIL
+  REFERRAL
+  UNKNOWN
+}
+
+// SocialPlatform.prisma
+enum SocialPlatform {
+  FACEBOOK
+  TWITTER
+  LINKEDIN
+  INSTAGRAM
+  YOUTUBE
+  TIKTOK
+  PINTEREST
+  SNAPCHAT
+  REDDIT
+  DISCORD
+  TELEGRAM
+  WHATSAPP
   UNKNOWN
 }
 
@@ -154,13 +189,23 @@ model ClickLog {
   urlId     String
   clickedAt DateTime    @default(now())
   ipAddress String?     @db.VarChar(45)
-  userAgent String?     @db.Text
-  referrer  String?     @db.Text
   country   String?     @db.VarChar(100)
   city      String?     @db.VarChar(100)
+  userAgent String?     @db.Text
   device    DeviceType  @default(UNKNOWN)
   browser   BrowserType @default(UNKNOWN)
   os        OSType      @default(UNKNOWN)
+  referrer  String?              @db.Text
+  referrerType   ReferrerType    @default(UNKNOWN)
+  utmSource   String?
+  utmMedium   String?
+  utmCampaign String?
+  socialPlatform SocialPlatform  @default(UNKNOWN)
+  fbclid String?
+  gclid  String?
+  isBot           Boolean?
+  isUniqueVisitor Boolean?
+  sessionId       String?
 
   // Relations
   url Url @relation(fields: [urlId], references: [id], onDelete: Cascade)
