@@ -11,7 +11,7 @@ const startApplication = async () => {
     console.log('✅ Database connected successfully');
 
     // Create and start server
-    const app = createServer();
+    const app = await createServer();
     console.log('🚀 Server created successfully');
     const server = app.listen(PORT, () => {
       console.log(`🚀 Server running on http://localhost:${PORT}`);
