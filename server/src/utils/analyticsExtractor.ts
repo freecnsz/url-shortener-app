@@ -1,4 +1,3 @@
-// analytics-extractor.ts
 import { parse } from 'useragent';
 import { RawRequestDto } from "../application/dtos/urls/RawRequest";
 import { ClickLog } from "../domain/entities/ClickLog";

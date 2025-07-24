@@ -11,16 +11,16 @@ export class RedisClient {
         password: process.env.REDIS_PASSWORD || undefined,
         db: parseInt(process.env.REDIS_DB || '0', 10),
         lazyConnect: true,
-        maxRetriesPerRequest: null, // BullMQ için gerekli
+        maxRetriesPerRequest: null, // Necessary for BullMQ
       });
 
       // Connection events
       RedisClient.instance.on('connect', () => {
-        console.log('✅ Redis connected successfully');
+        console.log('Redis connected successfully');
       });
 
       RedisClient.instance.on('error', (err) => {
-        console.error('❌ Redis connection error:', err);
+        console.error('Redis connection error:', err);
       });
     }
 
@@ -47,13 +47,13 @@ export class RedisClient {
     await client.del(key);
   }
 
-  // Counter için (click sayısı)
+  // For atomic increment operations
   public static async increment(key: string): Promise<number> {
     const client = RedisClient.getInstance();
     return await client.incr(key);
   }
 
-  // JSON objeler için
+  // JSON objects
   public static async setJSON(key: string, value: any, ttlSeconds?: number): Promise<void> {
     const jsonString = JSON.stringify(value);
     await RedisClient.set(key, jsonString, ttlSeconds);

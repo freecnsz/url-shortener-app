@@ -17,7 +17,7 @@ export class ProcessUserLoginJobHandler implements JobHandler {
 
   public async handle(data: ProcessUserLoginJobData): Promise<void> {
     if (!data.userId) {
-      console.warn("⚠️ No userId provided to ProcessUserLoginJobHandler");
+      console.warn("No userId provided to ProcessUserLoginJobHandler");
       return;
     }
 
@@ -26,7 +26,7 @@ export class ProcessUserLoginJobHandler implements JobHandler {
 
       const dbUser = await this.userRepository.findByIdAsync(data.userId);
       if (!dbUser) {
-        console.warn(`⚠️ User with ID ${data.userId} not found in database`);
+        console.warn(`User with ID ${data.userId} not found in database`);
         return;
       }
 
@@ -36,11 +36,11 @@ export class ProcessUserLoginJobHandler implements JobHandler {
       await this.userRepository.updateAsync(dbUser);
 
       console.log(
-        `✅ Last login updated for user ${data.userId} at ${now.toISOString()}`
+        `Last login updated for user ${data.userId} at ${now.toISOString()}`
       );
     } catch (error) {
       console.error(
-        `❌ Failed to process user login for user ${data.userId}:`,
+        `Failed to process user login for user ${data.userId}:`,
         error
       );
     }

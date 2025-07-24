@@ -1,214 +1,295 @@
 # 🔗 URL Shortener Server
 
-This project is the backend part of a URL shortening service developed according to Clean Architecture principles.
+A powerful and scalable URL shortener backend built with Clean Architecture principles, featuring advanced analytics, custom domains, and high-performance Redis caching.
 
-## 🌲 Project Structure
+## 📋 Prerequisites
 
-```
-🏠 url-shortener-app/server/
-├── 📦 package.json
-├── ⚙️ tsconfig.json
-├── 🗄️ prisma/                          # Database schema and migrations
-│   └── 📄 schema.prisma
-└── 📁 src/                             # Source code directory
-    ├── 🚀 app.ts
-    ├── 🎯 application/                  # Application layer (use cases, DTOs)
-    │   ├── 📊 dtos/                    # Data Transfer Objects
-    │   │   ├── 🔐 auth/                # Authentication DTOs
-    │   │   │   └── 📋 CreateUserDto.ts
-    │   │   └── 📤 responses/           # Response DTOs (empty for now)
-    │   └── 🎪 usecases/                # Business logic use cases
-    │       └── 👤 user/                # User-related use cases
-    │           └── 🛠️ CreateUserUseCase.ts
-    ├── ⚙️ config/                       # Configuration files
-    │   └── 🖥️ server.ts
-    ├── 💉 di/                          # Dependency Injection container
-    │   └── 📦 Container.ts
-    ├── 🏛️ domain/                       # Domain layer (business entities)
-    │   ├── 🏗️ entities/                # Domain entities
-    │   │   ├── 📊 ClickLog.ts
-    │   │   ├── 📁 Collection.ts
-    │   │   ├── 🔄 RefreshToken.ts
-    │   │   ├── 🔗 Url.ts
-    │   │   ├── 👤 User.ts
-    │   │   └── 🌐 CustomDomain.ts
-    │   ├── 🎭 enums/                   # Enumeration types
-    │   │   ├── 🔐 AuthProvider.ts
-    │   │   ├── 🌐 BrowserType.ts
-    │   │   ├── 📱 DeviceType.ts
-    │   │   └── 💻 OSType.ts
-    │   ├── ❌ errors/                   # Custom error classes
-    │   │   ├── 🚨 AppError.ts
-    │   │   ├── 📝 index.ts
-    │   │   ├── 🔍 NotFoundError.ts
-    │   │   ├── 👤 UserAlreadyExistsError.ts
-    │   │   ├── 🏷️ UsernameAlreadyExistsError.ts
-    │   │   └── ✅ ValidationError.ts
-    │   ├── 🔌 interfaces/               # Abstractions and contracts
-    │   │   ├── 🛠️ helpers/             # Helper interfaces
-    │   │   │   ├── 🔒 IPasswordHasher.ts
-    │   │   │   └── 🎫 JwtHelper.ts
-    │   │   └── 🗄️ repositories/        # Repository interfaces
-    │   │       └── 👤 IUserRepository.ts
-    │   └── 📤 responses/               # Response models
-    │       ├── 📊 ApiResponse.ts
-    │       └── ✅ Result.ts
-    ├── 🏗️ infrastructure/              # Infrastructure layer (external concerns)
-    │   ├── 🗺️ mappers/                 # Data mapping between layers
-    │   │   └── 👤 UserMapper.ts
-    │   ├── 🗄️ repositories/            # Data access implementations
-    │   │   └── 🐘 PrismaUserRepository.ts
-    │   └── ✅ validators/              # Input validation schemas
-    │       └── 📋 CreateUserSchema.ts
-    ├── 🎭 presentation/                # Presentation layer (HTTP/API)
-    │   ├── 🎮 controllers/             # HTTP request handlers
-    │   │   └── 🔐 AuthController.ts
-    │   ├── ⚡ middleware/              # HTTP middleware
-    │   │   ├── 🔄 asyncHandler.ts
-    │   │   ├── ❌ errorHandler.ts
-    │   │   └── 📝 index.ts
-    │   └── 🛣️ routes/                  # HTTP route definitions
-    │       ├── 🔐 auth.routes.ts
-    │       └── 📝 index.ts
-    └── 🛠️ utils/                       # Utility functions
-        ├── 🔒 bcryptHasher.ts
-        └── 📤 responseHelper.ts
+Before you begin, ensure you have the following installed on your system:
+
+- **Docker** & **Docker Compose**
+- **Git** (for cloning the repository)
+- **Node.js** (v20 or higher) - only if running without Docker
+- **PostgreSQL** (v15 or higher) - only if running without Docker
+- **Redis** (v7 or higher) - only if running without Docker
+
+## 🚀 Installation & Setup
+
+### Method 1: Quick Start with Docker (Recommended)
+
+This is the easiest way to get the application running with all dependencies.
+
+#### Step 1: Clone the Repository
+```bash
+git clone https://github.com/freecnsz/url-shortener-app.git
+cd url-shortener-app/server
 ```
 
-## 🏛️ Clean Architecture Layers
+#### Step 2: Environment Configuration
+Create a `.env` file in the server directory with the following variables:
 
-### 🎯 Application Layer
-- **DTOs**: Data Transfer Objects for external communication
-- **Use Cases**: Business logic implementation and orchestration
+**Example .env configuration:**
+```env
+# Database Configuration
+DATABASE_URL="postgresql://postgres:admin@postgres:5432/linkhub"
+POSTGRES_DB=linkhub # Database name
+POSTGRES_USER=postgres # Database user
+POSTGRES_PASSWORD=admin # Database password
 
-### 🏛️ Domain Layer
-- **Entities**: Core business objects containing domain logic
-- **Enums**: Constant values and types
-- **Errors**: Custom exception classes for domain-specific errors
-- **Interfaces**: Abstractions and contracts for external dependencies
-- **Responses**: Response models for operations
+# JWT Authentication Secrets
+JWT_SECRET="your-super-secret-jwt-key-minimum-32-characters"
+JWT_EXPIRES_IN=24h
+JWT_REFRESH_SECRET="your-refresh-token-secret-minimum-32-characters"
+JWT_REFRESH_EXPIRES_IN=7d
 
-### 🏗️ Infrastructure Layer
-- **Mappers**: Data transformation between domain and persistence layers
-- **Repositories**: Data access implementations using external frameworks
-- **Validators**: Input validation using external validation libraries
+# Short Code Generation
+SHORT_CODE_SECRET="your-short-code-generation-secret-minimum-32-characters"
+BASE_URL="http://localhost:3000" # Base URL for redirects
 
-### 🎭 Presentation Layer
-- **Controllers**: HTTP request handlers and response formatting
-- **Middleware**: Cross-cutting concerns like authentication, logging, error handling
-- **Routes**: URL routing and endpoint definitions
+# Redis Configuration
+REDIS_HOST=redis
+REDIS_PORT=6379
+REDIS_PASSWORD=
+REDIS_DB=0
 
-## 🔗 Entity Relationship Diagram
+# OAuth Integration
+GOOGLE_CLIENT_ID="your-google-oauth-client-id.apps.googleusercontent.com" # Google OAuth Client ID
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                                    👤 USER                                   │
-├─────────────────────────────────────────────────────────────────────────────┤
-│ 🆔 id: string (PK)                                                           │
-│ 🏷️ username: string | null                                                   │
-│ 📧 email: string                                                             │
-│ 🔒 passwordHash?: string                                                      │
-│ 🔐 provider: AuthProvider                                                     │
-│ 🆔 providerId?: string                                                        │
-│ 👤 firstName?: string                                                         │
-│ 👤 lastName?: string                                                          │
-│ 🖼️ profilePictureUrl?: string                                                │
-│ 📝 bio?: string                                                              │
-│ ✅ isEmailVerified: boolean                                                   │
-│ 🎫 emailVerificationToken?: string                                            │
-│ ⏰ emailVerificationExpiresAt?: Date                                           │
-│ ✅ isActive: boolean                                                          │
-│ 🕒 lastLoginAt?: Date                                                         │
-│ 🔄 passwordResetToken?: string                                                │
-│ ⏰ passwordResetExpiresAt?: Date                                               │
-│ 📅 createdAt: Date                                                           │
-│ 📅 updatedAt: Date                                                           │
-└─────────────────────────────────────────────────────────────────────────────┘
-            │                    │                    │                    │
-            │1                   │1                   │1                   │1
-            │                    │                    │                    │
-            │*                   │*                   │*                   │*
-┌───────────────────┐  ┌─────────────────────┐  ┌────────────────────┐  ┌────────────────────┐
-│   📁 COLLECTION   │  │      🔗 URL         │  │   🔄 REFRESH_TOKEN  │  │  🌐 CUSTOM_DOMAIN  │
-├───────────────────┤  ├─────────────────────┤  ├────────────────────┤  ├────────────────────┤
-│ 🆔 id: string     │  │ 🆔 id: string       │  │ 🆔 id: string      │  │ 🆔 id: string      │
-│ 👤 userId: string │  │ 👤 userId: string|nu│  │ 👤 userId: string  │  │ 👤 userId: string  │
-│ 🏷️ name: string   │  │ 🔗 originalUrl: str │  │ 🎫 token: string   │  │ 🌐 domain: string  │
-│ 📝 description?   │  │ 🔗 shortCode: str   │  │ ⏰ expiresAt: Date │  │ 📅 createdAt: Date │
-│ 🌍 isPublic: bool │  │ 🏷️ customAlias?    │  │ 📅 createdAt: Date │  │ 📅 updatedAt: Date │
-│ 📅 createdAt      │  │ 🌐 customDomainId? │  │ 🕒 lastUsedAt?     │  └────────────────────┘
-│ 📅 updatedAt      │  │ 📁 collectionId?   │  │ 🚫 revokedAt?      │
-└───────────────────┘  │ 🏷️ name?           │  │ 🔄 replacedBy?     │
-            │          │ 📝 description?    │  │ 🌐 ipAddress?      │
-            │1         │ 🔢 clickCount: int │  │ 🖥️ userAgent?      │
-            │          │ 🕒 lastClickedAt?  │  │ 📱 deviceInfo?     │
-            │*         │ ⏰ expiresAt?      │  │ 🔐 deviceFingerpr? │
-            └──────────┤ 🔢 maxClicks?      │  │ ✅ isActive: bool  │
-                       │ ✅ isActive: bool  │  │ 🔢 usageCount: int │
-                       │ 🔒 isPasswordPro?  │  └────────────────────┘
-                       │ 🔒 passwordHash?   │
-                       │ 📅 createdAt       │           │1
-                       │ 📅 updatedAt       │           │
-                       └─────────────────────┘           │
-                                  │                     │*
-                                  │1              ┌────────────────────┐
-                                  │               │   📊 CLICK_LOG     │
-                                  │*              ├────────────────────┤
-                                  └───────────────┤ 🆔 id: number      │
-                                                  │ 🔗 urlId: string   │
-                                                  │ 🕒 clickedAt: Date │
-                                                  │ 🌐 ipAddress?      │
-                                                  │ 🖥️ userAgent?      │
-                                                  │ 🔗 referrer?       │
-                                                  │ 🌍 country?        │
-                                                  │ 🏙️ city?           │
-                                                  │ 📱 device: DeviceT │
-                                                  │ 🌐 browser: Browse │
-                                                  │ 💻 os: OSType      │
-                                                  └────────────────────┘
+# Application Settings
+NODE_ENV=production # Environment (development or production)
+PORT=3000
+COMPOSE_PROJECT_NAME=linkhub # Docker Compose project name
 ```
 
-## 📊 Entity Relationships
+#### Step 3: Build and Start Services
 
-### 🔗 One-to-Many Relationships:
-- **👤 User** → **📁 Collection** (1:N) - A user can have multiple collections
-- **👤 User** → **🔗 Url** (1:N) - A user can create multiple shortened URLs  
-- **👤 User** → **🔄 RefreshToken** (1:N) - A user can have multiple active refresh tokens
-- **👤 User** → **🌐 CustomDomain** (1:N) - A user can own multiple custom domains
-- **📁 Collection** → **🔗 Url** (1:N) - A collection can contain multiple URLs
-- **🔗 Url** → **📊 ClickLog** (1:N) - A URL can have multiple click tracking records
-- **🌐 CustomDomain** → **🔗 Url** (1:N) - A custom domain can be used by multiple URLs
+Make sure you have [Docker](https://www.docker.com/) and Docker Compose installed and working correctly. Then run the following command to build and start all services:
 
-### 🔑 Foreign Keys:
-- `Collection.userId` → `User.id`
-- `Url.userId` → `User.id` 
-- `Url.collectionId` → `Collection.id`
-- `Url.customDomainId` → `CustomDomain.id`
-- `RefreshToken.userId` → `User.id`
-- `ClickLog.urlId` → `Url.id`
-- `CustomDomain.userId` → `User.id`
+```bash
+# Build and start all services (app, postgres, redis)
+docker-compose up --build
 
-## 🚀 Features
+# Or run in background
+docker-compose up -d --build
+```
 
-- ✅ Clean Architecture for maintainable and testable code
-- 🔐 JWT-based authentication and authorization
-- 📊 Comprehensive click tracking and analytics
-- 🔗 Custom domain support for branded short links
-- 📁 URL collections for better organization
-- 🔒 Password-protected URLs for security
-- ⏰ URL expiration support with automatic cleanup
-- 📱 Device/Browser/OS tracking for detailed analytics
-- 🌍 Geolocation tracking for geographic insights
+#### Step 4: Run Database Migrations
+Migrations will be automatically applied when the application starts. If you need to run them manually, use:
 
-## 🛠️ Technologies
+```bash
+# Run database migrations
+docker-compose exec app npx prisma migrate deploy
+# Generate Prisma client
+docker-compose exec app npx prisma generate
+# (Optional) Seed admin user
+docker-compose exec app npm run seed:admin
+```
 
-- **TypeScript** - Type-safe development and better developer experience
-- **Prisma** - Type-safe database ORM with excellent TypeScript integration
-- **Express.js** - Fast and minimalist web framework for Node.js
-- **JWT** - Secure authentication with JSON Web Tokens
-- **Bcrypt** - Password hashing for secure user authentication
-- **Dependency Injection** - Loose coupling and better testability
+#### Step 5: Verify Installation
+The application will be available at:
+- **API Server**: `http://localhost:3000`
+- **Database**: `localhost:5432` (from host machine)
+- **Redis**: `localhost:6379` (from host machine)
 
-## 📝 License
 
-This project is licensed under the MIT License.
+### Method 2: Local Development Setup
+
+For development with hot reload and debugging capabilities.
+
+#### Step 1: Clone and Install Dependencies
+```bash
+git clone https://github.com/freecnsz/url-shortener-app.git
+cd url-shortener-app/server
+
+# Install Node.js dependencies
+npm install
+```
+
+#### Step 2: Setup Local Database
+```bash
+# Start only database services
+docker-compose up -d postgres redis
+
+# Or setup your own PostgreSQL and Redis instances
+```
+
+#### Step 3: Environment Configuration
+Update your `.env` file for local development:
+```env
+DATABASE_URL="postgresql://postgres:admin@localhost:5432/linkhub"
+REDIS_HOST=localhost
+NODE_ENV=development
+# ... other variables
+```
+
+#### Step 4: Database Migration
+```bash
+# Run migrations
+npx prisma migrate dev
+
+# Generate Prisma client
+npx prisma generate
+
+# View database (optional)
+npx prisma studio
+```
+
+#### Step 5: Start Development Server
+```bash
+npm run dev
+```
+
+## Available Endpoints
+
+### Authentication
+- **POST** `/api/auth/register`: User registration with email and password
+    request body:
+    ```json
+    {
+      "email": "<user@example.com>",
+      "password": "your-password",
+      "username": "johndoe",
+      "firstName": "John",
+      "lastName": "Doe"
+    }
+    ```
+- **POST** `/api/auth/login`: User login with email and password
+    request body:
+    ```json
+    {
+      "email": "<user@example.com>",
+      "password": "your-password"
+    }
+    ```
+- **POST** `/api/auth/google`: Google OAuth login
+    request body:
+    ```json
+    {
+      "accessToken": "<google-id-token>"
+    }
+    ```
+### URL Management
+- **POST** `/api/urls`: Create a new shortened URL
+    request body:
+    ```json
+    {
+      "originalUrl": "https://example.com",
+    }
+    ```
+- **GET** `/api/urls/:shortCode`: Retrieve original URL by short code
+
+## 📁 Project Structure
+
+```
+server/
+├── package.json                   # Dependencies and scripts
+├── Dockerfile                     # Docker container configuration
+├── docker-compose.yml             # Multi-service Docker setup
+├── docker-entrypoint.sh           # Container startup script
+├── tsconfig.json                  # TypeScript configuration
+├── .env                           # Environment variables
+├── prisma/                        # Database schema and migrations
+│   ├── schema.prisma              # Database schema definition
+│   └── migrations/                # Database migration files
+├── src/                           # Source code
+│   ├── app.ts                     # Application entry point
+│   ├── application/               # Application layer (Clean Architecture)
+│   │   ├── dtos/                  # Data Transfer Objects
+│   │   │   ├── auth/              # Authentication DTOs
+│   │   │   └── urls/              # URL-related DTOs
+│   │   ├── mappers/               # Domain to DTO mappers
+│   │   └── usecases/              # Business logic use cases
+│   │       ├── auth/              # Authentication use cases
+│   │       └── urls/              # URL management use cases
+│   ├── config/                    # Configuration files
+│   │   └── server.ts              # Express server setup
+│   ├── di/                        # Dependency Injection container
+│   │   └── Container.ts           # IoC container configuration
+│   ├── domain/                    # Domain layer (Clean Architecture)
+│   │   ├── entities/              # Business entities
+│   │   ├── enums/                 # Enumeration types
+│   │   ├── errors/                # Custom error classes
+│   │   ├── interfaces/            # Abstractions and contracts
+│   │   └── responses/             # Response models
+│   ├── infrastructure/            # Infrastructure layer
+│   │   ├── helpers/               # Infrastructure helpers
+│   │   ├── mappers/               # Data persistence mappers
+│   │   ├── queues/                # Background job queues
+│   │   ├── redis/                 # Redis services and caching
+│   │   ├── repositories/          # Data access implementations
+│   │   └── validators/            # Input validation schemas
+│   ├── presentation/              # Presentation layer
+│   │   ├── controllers/           # HTTP request handlers
+│   │   ├── middleware/            # HTTP middleware
+│   │   └── routes/                # HTTP route definitions
+│   └── utils/                     # Utility functions
+└── logs/                          # Application logs (Docker volume)
+```
+
+## 🐳 Docker Services
+
+### Core Services
+- **app**: Main Node.js application server
+- **postgres**: PostgreSQL database
+- **redis**: Redis cache and queue storage
+
+### Service Configuration
+```yaml
+# Application Server
+app:
+  port: 3000
+  environment: production
+  restart: unless-stopped
+
+# PostgreSQL Database  
+postgres:
+  port: 5432
+  database: linkhub
+  volume: postgres_data
+
+# Redis Cache
+redis:
+  port: 6379
+  volume: redis_data
+```
+
+## 🛠️ Development Commands
+
+### Available Scripts
+```bash
+npm run dev          # Start development server with hot reload
+npm run build        # Build TypeScript for production
+npm run start        # Start production server
+npm run seed:admin   # Seed admin user to database
+```
+
+## 🔒 Security Features
+
+- **Password Hashing**: Bcrypt for secure password storage
+- **JWT Tokens**: Secure authentication with refresh tokens
+- **Input Validation**: Comprehensive request validation with Zod
+- **Rate Limiting**: Protection against abuse and DDoS
+- **CORS Protection**: Configurable cross-origin requests
+- **Helmet.js**: Security headers for Express applications
+- **Environment Variables**: Secure configuration management
+
+## 📈 Performance Optimizations
+
+- **Redis Caching**: Fast URL lookups and session storage
+- **Connection Pooling**: Efficient database connections
+- **Background Jobs**: Asynchronous processing for analytics
+- **Short Code Pool**: Pre-generated codes for instant creation
+- **Database Indexing**: Optimized query performance
+- **Docker Multi-stage Builds**: Optimized container images
+
+## 📞 Support
+
+If you encounter any issues or have questions:
+
+1. Check the [Issues](https://github.com/freecnsz/url-shortener-app/issues) page
+2. Create a new issue with detailed information
+3. Include logs and environment details for faster resolution
+
+## 🔄 Version History
+
+- **v1.0.0** - Initial release with core URL shortening features
+- Features: Authentication, Analytics, Custom Domains, Background Jobs

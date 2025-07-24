@@ -1,12 +1,11 @@
-// infrastructure/redis/redisServices/ShortCodePoolMonitor.ts
 import { RedisClient } from '../RedisClient';
 import { QueueManager } from '../../queues/QueueManager';
 import { QueueNames } from '../../queues/QueueNames';
 
 interface PoolConfig {
-  minThreshold: number;    // Pool bu seviyenin altına düşünce refill tetikle
-  maxSize: number;         // Pool maksimum boyutu
-  refillSize: number;      // Her defasında kaç kod eklensin
+  minThreshold: number;   // Minimum threshold to trigger refill
+  maxSize: number;        // Maximum pool size
+  refillSize: number;     // Number of codes to add during refill
 }
 
 export class ShortCodePoolMonitor {
@@ -29,49 +28,49 @@ export class ShortCodePoolMonitor {
     return ShortCodePoolMonitor.instance;
   }
 
-  // Pool'dan kod al ve gerekirse refill tetikle
+  // Get a short code from the pool
   public async getShortCode(): Promise<string | null> {
     const client = RedisClient.getInstance();
-    
-    // Pool'dan kod al
+
+    // Get a short code from the pool
     const code = await client.lpop(this.poolKey);
-    
-    // Pool seviyesini kontrol et
+
+    // Check pool level
     await this.checkAndTriggerRefill();
     
     return code;
   }
 
-  // Pool seviyesini kontrol et, gerekirse refill job'ı tetikle
+  // Check pool level and trigger refill job if necessary
   private async checkAndTriggerRefill(): Promise<void> {
     try {
       const currentSize = await this.getPoolSize();
       
       if (currentSize <= this.config.minThreshold) {
-        console.log(`⚠️ Pool size is low: ${currentSize}/${this.config.maxSize}`);
+        console.log(`Pool size is low: ${currentSize}/${this.config.maxSize}`);
         
-        // Eş zamanlı refill'i önlemek için lock kullan
+        // Acquire lock to prevent multiple refills
         const isLocked = await this.acquireRefillLock();
         if (isLocked) {
-          console.log('🔄 Triggering pool refill...');
+          console.log('Triggering pool refill...');
           await QueueManager.addJob(QueueNames.FullShortCodePool, {});
         }
       }
     } catch (error) {
-      console.error('❌ Failed to check pool level:', error);
+      console.error('Failed to check pool level:', error);
     }
   }
 
-  // Refill lock sistemi
+  // Refill lock system
   private async acquireRefillLock(): Promise<boolean> {
     const client = RedisClient.getInstance();
-    const lockDuration = 300; // 5 dakika lock
-    
+    const lockDuration = 300; // 5 minutes lock
+
     const result = await client.set(this.refillLockKey, '1', 'EX', lockDuration, 'NX');
     return result === 'OK';
   }
 
-  // Pool istatistikleri
+  // Pool statistics
   public async getPoolStats(): Promise<{
     currentSize: number;
     maxSize: number;
@@ -92,11 +91,11 @@ export class ShortCodePoolMonitor {
     return await RedisClient.getInstance().llen(this.poolKey);
   }
 
-  // Pool'a manuel kod ekleme (ihtiyaç halinde)
+  // Manually add codes to the pool (if needed)
   public async addCodes(codes: string[]): Promise<void> {
     if (codes.length === 0) return;
     const client = RedisClient.getInstance();
     await client.rpush(this.poolKey, ...codes);
-    console.log(`📦 Added ${codes.length} codes to pool`);
+    console.log(`Added ${codes.length} codes to pool`);
   }
 }

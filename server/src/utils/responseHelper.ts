@@ -3,8 +3,6 @@ import { ApiResponse } from '../domain/responses/ApiResponse';
 
 export class responseHelper {
   
-  // ========== SUCCESS RESPONSES ==========
-  
   static success<T>(res: Response, data?: T, message: string = 'Success'): void {
     const response: ApiResponse<T> = {
       success: true,
@@ -34,7 +32,6 @@ export class responseHelper {
     res.status(204).json(response);
   }
 
-  // ========== CLIENT ERROR RESPONSES ==========
   
   static badRequest(res: Response, error: string, details?: any): void {
     const response: ApiResponse = {
@@ -98,7 +95,6 @@ export class responseHelper {
     res.status(422).json(response);
   }
 
-  // ========== SERVER ERROR RESPONSES ==========
   
   static internalError(res: Response, error: string = 'Internal server error'): void {
     const response: ApiResponse = {
@@ -120,8 +116,6 @@ export class responseHelper {
     res.status(503).json(response);
   }
 
-  // ========== GENERIC ERROR HANDLER ==========
-  
   static error(res: Response, error: string, statusCode: number = 500, details?: any): void {
     const response: ApiResponse = {
       success: false,
@@ -133,8 +127,6 @@ export class responseHelper {
     res.status(statusCode).json(response);
   }
 
-  // ========== UTILITY METHODS ==========
-  
   private static getStatusMessage(statusCode: number): string {
     const messages: { [key: number]: string } = {
       400: 'Bad Request',
@@ -149,8 +141,6 @@ export class responseHelper {
     return messages[statusCode] || 'Error';
   }
 
-  // ========== PAGINATED RESPONSE ==========
-  
   static paginated<T>(
     res: Response, 
     data: T[], 
