@@ -1,7 +1,65 @@
-<header>
-  <h1>{{ title }}</h1>
-</header>
+<div class="app-layout">
+  <header>
+    <h1>{{ title }}</h1>
+  </header>
 
-<main>
-  <router-outlet></router-outlet>
-</main>
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+
+  <footer class="app-footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <div class="footer-brand">
+          <div class="footer-brand-icon">🔗</div>
+          <span>ShortLink</span>
+        </div>
+        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">
+          Fast, secure, and reliable URL shortening service
+        </p>
+      </div>
+      
+      <div class="footer-section">
+        <div class="footer-title">Product</div>
+        <div class="footer-links">
+          <a href="#" class="footer-link">Features</a>
+          <a href="#" class="footer-link">API</a>
+          <a href="#" class="footer-link">Analytics</a>
+          <a href="#" class="footer-link">Custom Domains</a>
+        </div>
+      </div>
+      
+      <div class="footer-section">
+        <div class="footer-title">Company</div>
+        <div class="footer-links">
+          <a href="#" class="footer-link">About</a>
+          <a href="#" class="footer-link">Blog</a>
+          <a href="#" class="footer-link">Contact</a>
+          <a href="#" class="footer-link">Support</a>
+        </div>
+      </div>
+      
+      <div class="footer-section">
+        <div class="footer-title">Connect</div>
+        <div class="footer-social">
+          <a href="#" class="social-link" aria-label="Twitter">🐦</a>
+          <a href="#" class="social-link" aria-label="GitHub">🐙</a>
+          <a href="#" class="social-link" aria-label="LinkedIn">💼</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <div class="footer-bottom-content">
+        <div class="footer-copyright">
+          © 2025 ShortLink. All rights reserved.
+        </div>
+        <div class="footer-legal">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Cookie Policy</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>

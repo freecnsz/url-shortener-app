@@ -1,0 +1,40 @@
+<div class="shortener-page" [ngClass]="currentState">
+  <div class="page-background"></div>
+  
+  <div class="shortener-content" [ngClass]="{ 'has-result': hasResult }">
+    <div class="content-wrapper">
+      <!-- URL Form Container -->
+      <div class="form-container" [ngClass]="{ 'compact': hasResult }">
+        <div class="form-wrapper" [ngClass]="{ 'compact': hasResult }">
+          <app-url-form
+            [isCompact]="hasResult"
+            [isLoading]="isLoading"
+            (urlSubmitted)="onUrlSubmit($event)"
+          ></app-url-form>
+        </div>
+      </div>
+
+      <!-- URL Result Container -->
+      <div class="result-container" [ngClass]="{ 'show': showResult, 'loading': isLoading }">
+        <div class="result-wrapper" *ngIf="showResult || isLoading">
+          <app-url-result
+            [originalUrl]="originalUrl"
+            [shortenedUrl]="shortenedUrl"
+            [isLoading]="isLoading"
+            [stats]="urlStats"
+            (newUrlRequested)="onNewUrlRequest()"
+            (shareRequested)="onShareRequest($event)"
+          ></app-url-result>
+        </div>
+      </div>
+    </div>
+
+    <!-- Floating Decorations -->
+    <div class="floating-decoration decoration-1"></div>
+    <div class="floating-decoration decoration-2"></div>
+    <div class="floating-decoration decoration-3"></div>
+  </div>
+
+  <!-- Scroll Indicator -->
+  <div class="scroll-indicator" [ngClass]="{ 'hidden': hasResult }"></div>
+</div>

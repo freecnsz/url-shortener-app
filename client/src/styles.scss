@@ -1,1 +1,288 @@
+/* src/styles.scss */
 
+/* Light Theme - Modern Blue Palette */
+.light-theme {
+  /* Primary Blues */
+  --primary-color: #2563eb;        /* Modern bright blue */
+  --primary-hover: #1d4ed8;        /* Darker blue on hover */
+  --primary-light: #3b82f6;        /* Light blue accent */
+  --primary-dark: #1e40af;         /* Dark blue accent */
+  --primary-color-alpha: rgba(37, 99, 235, 0.1); /* Primary with alpha */
+  
+  /* Secondary Colors */
+  --secondary-color: #64748b;       /* Slate gray */
+  --secondary-hover: #475569;       /* Darker slate */
+  --accent-color: #06b6d4;          /* Cyan accent */
+  --accent-hover: #0891b2;          /* Darker cyan */
+  
+  /* Success/Warning/Error */
+  --success-color: #10b981;         /* Emerald green */
+  --warning-color: #f59e0b;         /* Amber */
+  --error-color: #ef4444;           /* Red */
+  
+  /* Backgrounds */
+  --background-color: #ffffff;      /* Pure white */
+  --background-alt: #f8fafc;        /* Light gray background */
+  --surface-color: #f1f5f9;         /* Surface gray */
+  --card-color: #ffffff;            /* Card white */
+  --hover-bg: #f1f5f9;             /* Hover background */
+  
+  /* Text Colors */
+  --text-primary: #1e293b;          /* Dark slate */
+  --text-secondary: #475569;        /* Medium slate */
+  --text-muted: #64748b;            /* Light slate */
+  --text-inverse: #ffffff;          /* White text */
+  
+  /* Borders */
+  --border-color: #e2e8f0;          /* Light border */
+  --border-hover: #cbd5e1;          /* Hover border */
+  --border-focus: #2563eb;          /* Focus border (primary) */
+  
+  /* Shadows & Effects */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-blue: 0 4px 14px 0 rgb(37 99 235 / 0.15);
+  --shadow-hover: 0 8px 25px -8px rgb(0 0 0 / 0.15);
+}
+
+/* Dark Theme - Elegant Blue Palette */
+.dark-theme {
+  /* Primary Blues */
+  --primary-color: #3b82f6;        /* Bright blue for dark theme */
+  --primary-hover: #2563eb;        /* Hover blue */
+  --primary-light: #60a5fa;        /* Light blue accent */
+  --primary-dark: #1d4ed8;         /* Dark blue accent */
+  --primary-color-alpha: rgba(59, 130, 246, 0.15); /* Primary with alpha */
+  
+  /* Secondary Colors */
+  --secondary-color: #94a3b8;       /* Light slate */
+  --secondary-hover: #cbd5e1;       /* Lighter slate */
+  --accent-color: #22d3ee;          /* Cyan accent */
+  --accent-hover: #06b6d4;          /* Darker cyan */
+  
+  /* Success/Warning/Error */
+  --success-color: #34d399;         /* Light emerald */
+  --warning-color: #fbbf24;         /* Light amber */
+  --error-color: #f87171;           /* Light red */
+  
+  /* Backgrounds */
+  --background-color: #0f172a;      /* Deep navy */
+  --background-alt: #1e293b;        /* Dark slate */
+  --surface-color: #334155;         /* Medium slate */
+  --card-color: #1e293b;            /* Card dark slate */
+  --hover-bg: #334155;             /* Hover background */
+  
+  /* Text Colors */
+  --text-primary: #f1f5f9;          /* Light text */
+  --text-secondary: #cbd5e1;        /* Medium light text */
+  --text-muted: #94a3b8;            /* Muted text */
+  --text-inverse: #1e293b;          /* Dark text */
+  
+  /* Borders */
+  --border-color: #475569;          /* Dark border */
+  --border-hover: #64748b;          /* Hover border */
+  --border-focus: #3b82f6;          /* Focus border (primary) */
+  
+  /* Shadows & Effects */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.4);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.5);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.6), 0 8px 10px -6px rgb(0 0 0 / 0.6);
+  --shadow-blue: 0 4px 14px 0 rgb(59 130 246 / 0.3);
+  --shadow-hover: 0 8px 25px -8px rgb(0 0 0 / 0.4);
+}
+
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  line-height: 1.6;
+}
+
+/* Enhanced Button Styles */
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+  color: var(--text-inverse);
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--primary-hover) 0%, var(--primary-color) 100%);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-blue), var(--shadow-lg);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-secondary {
+  background-color: var(--surface-color);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-secondary:hover {
+  background-color: var(--hover-bg);
+  border-color: var(--border-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-accent {
+  background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-hover) 100%);
+  color: var(--text-inverse);
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-accent:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px 0 rgb(6 182 212 / 0.3), var(--shadow-lg);
+}
+
+/* Enhanced Card Styles */
+.card {
+  background-color: var(--card-color);
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-hover);
+  border-color: var(--border-hover);
+  transform: translateY(-2px);
+}
+
+.card-elevated {
+  box-shadow: var(--shadow-lg);
+}
+
+.card-interactive {
+  cursor: pointer;
+}
+
+.card-interactive:hover {
+  border-color: var(--primary-color);
+  box-shadow: var(--shadow-blue), var(--shadow-xl);
+}
+
+/* Enhanced Input Styles */
+.input {
+  background-color: var(--surface-color);
+  border: 2px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 0.875rem 1rem;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100%;
+  box-shadow: var(--shadow-sm);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: var(--shadow-blue), var(--shadow-md);
+  background-color: var(--card-color);
+}
+
+.input:hover:not(:focus) {
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow-md);
+}
+
+.input::placeholder {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+/* Status Colors */
+.text-success { color: var(--success-color); }
+.text-warning { color: var(--warning-color); }
+.text-error { color: var(--error-color); }
+.text-primary { color: var(--primary-color); }
+.text-accent { color: var(--accent-color); }
+
+.bg-success { background-color: var(--success-color); }
+.bg-warning { background-color: var(--warning-color); }
+.bg-error { background-color: var(--error-color); }
+
+/* Layout Utilities */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.gap-2 { gap: 0.5rem; }
+.gap-4 { gap: 1rem; }
+.gap-6 { gap: 1.5rem; }
+
+/* Spacing */
+.p-2 { padding: 0.5rem; }
+.p-4 { padding: 1rem; }
+.p-6 { padding: 1.5rem; }
+.m-2 { margin: 0.5rem; }
+.m-4 { margin: 1rem; }
+.m-6 { margin: 1.5rem; }
+
+/* Hover Effects */
+.hover-lift {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+}
+
+.hover-glow {
+  transition: box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-glow:hover {
+  box-shadow: var(--shadow-blue);
+}

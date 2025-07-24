@@ -1,0 +1,61 @@
+<div class="url-form" [ngClass]="{ 'compact': isCompact, 'loading': isLoading }">
+  <form (ngSubmit)="onSubmit()" #urlForm="ngForm">
+    <div class="form-header">
+      <h1 class="form-title" [ngClass]="{ 'compact': isCompact }">
+        {{ isCompact ? 'ShortLink' : 'Shorten Your URLs' }}
+      </h1>
+      <p class="form-subtitle" [ngClass]="{ 'compact': isCompact }" *ngIf="!isCompact">
+        Create short, shareable links in seconds
+      </p>
+    </div>
+
+    <div class="form-body">
+      <div class="input-container">
+        <input
+          type="url"
+          class="url-input"
+          [ngClass]="{ 'compact': isCompact }"
+          placeholder=" "
+          [(ngModel)]="url"
+          name="url"
+          required
+          #urlInput="ngModel"
+          [disabled]="isLoading"
+          (keydown.enter)="onSubmit()"
+        />
+        <label class="input-label">Enter your long URL here</label>
+        
+        <div class="input-validation" *ngIf="urlInput.invalid && urlInput.touched">
+          <span class="validation-message">Please enter a valid URL</span>
+        </div>
+      </div>
+
+      <div class="button-container">
+        <div class="submit-btn-wrapper">
+          <button
+            type="submit"
+            class="submit-btn"
+            [ngClass]="{ 'compact': isCompact, 'loading': isLoading }"
+            [disabled]="urlForm.invalid || isLoading"
+          >
+            <span class="btn-text" *ngIf="!isLoading">
+              {{ isCompact ? 'Shorten' : 'Shorten URL' }}
+            </span>
+            <span class="btn-text" *ngIf="isLoading">
+              Processing...
+            </span>
+          </button>
+          
+          <div class="success-animation" [ngClass]="{ 'show': showSuccess }">
+            ✓ Success!
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Floating decorative elements -->
+    <div class="floating-element" *ngIf="!isCompact">🔗</div>
+    <div class="floating-element" *ngIf="!isCompact">⚡</div>
+    <div class="floating-element" *ngIf="!isCompact">🚀</div>
+  </form>
+</div>
