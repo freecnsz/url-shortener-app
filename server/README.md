@@ -12,7 +12,6 @@ This project is the backend part of a URL shortening service developed according
 │   └── 📄 schema.prisma
 └── 📁 src/                             # Source code directory
     ├── 🚀 app.ts
-    ├── 📝 swagger.yaml
     ├── 🎯 application/                  # Application layer (use cases, DTOs)
     │   ├── 📊 dtos/                    # Data Transfer Objects
     │   │   ├── 🔐 auth/                # Authentication DTOs
@@ -22,8 +21,7 @@ This project is the backend part of a URL shortening service developed according
     │       └── 👤 user/                # User-related use cases
     │           └── 🛠️ CreateUserUseCase.ts
     ├── ⚙️ config/                       # Configuration files
-    │   ├── 🖥️ server.ts
-    │   └── 📚 swagger.ts
+    │   └── 🖥️ server.ts
     ├── 💉 di/                          # Dependency Injection container
     │   └── 📦 Container.ts
     ├── 🏛️ domain/                       # Domain layer (business entities)
@@ -209,7 +207,6 @@ This project is the backend part of a URL shortening service developed according
 - **Express.js** - Fast and minimalist web framework for Node.js
 - **JWT** - Secure authentication with JSON Web Tokens
 - **Bcrypt** - Password hashing for secure user authentication
-- **Swagger** - Comprehensive API documentation and testing
 - **Dependency Injection** - Loose coupling and better testability
 
 ## 📝 License
