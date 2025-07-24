@@ -1,0 +1,98 @@
+<div class="url-result" [ngClass]="{ 'loading': isLoading }">
+  <!-- Loading State -->
+  <div class="result-loading" *ngIf="isLoading">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Processing your URL...</div>
+    <div class="loading-steps">
+      <div class="loading-step" [ngClass]="{ 'active': currentStep === 'validating', 'completed': currentStep !== 'validating' && steps.includes('validating') }">
+        Validating URL
+      </div>
+      <div class="loading-step" [ngClass]="{ 'active': currentStep === 'shortening', 'completed': currentStep !== 'shortening' && steps.includes('shortening') }">
+        Creating short link
+      </div>
+      <div class="loading-step" [ngClass]="{ 'active': currentStep === 'qr', 'completed': currentStep !== 'qr' && steps.includes('qr') }">
+        Generating QR code
+      </div>
+      <div class="loading-step" [ngClass]="{ 'active': currentStep === 'complete', 'completed': steps.includes('complete') }">
+        Ready!
+      </div>
+    </div>
+  </div>
+
+  <!-- Success State -->
+  <div class="url-result-content" *ngIf="!isLoading && shortenedUrl">
+    <div class="result-header">
+      <div class="result-title">
+        🎉 URL Successfully Shortened!
+      </div>
+      <div class="result-subtitle">
+        Your link is ready to share
+      </div>
+    </div>
+
+    <div class="url-display-container">
+      <div class="original-url">
+        <div class="url-label">Original URL</div>
+        <div class="url-row">
+          <div class="url-value original">{{ originalUrl }}</div>
+          <button class="visit-btn" (click)="visitUrl(originalUrl)" title="Visit original URL">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+      
+      <div class="shortened-url">
+        <div class="url-label">Shortened URL</div>
+        <div class="url-row">
+          <div class="url-value shortened">{{ shortenedUrl }}</div>
+          <button class="visit-btn" (click)="visitUrl(shortenedUrl)" title="Visit shortened URL">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="action-buttons">
+      <button class="copy-btn" [ngClass]="{ 'copied': isCopied }" (click)="copyToClipboard()">
+        <span class="icon">{{ isCopied ? '✓' : '📋' }}</span>
+        {{ isCopied ? 'Copied!' : 'Copy Link' }}
+      </button>
+      
+      <button class="new-url-btn" (click)="createNewUrl()">
+        <span class="icon">➕</span>
+        New URL
+      </button>
+      
+      <button class="share-btn" (click)="shareUrl()">
+        <span class="icon">📤</span>
+        Share
+      </button>
+    </div>
+
+    <div class="qr-section" *ngIf="shortenedUrl">
+      <div class="qr-title">QR Code</div>
+      <div class="qr-code" *ngIf="qrCodeUrl; else qrPlaceholder">
+        <img [src]="qrCodeUrl" [alt]="'QR Code for ' + shortenedUrl" />
+        <button class="download-qr-btn" (click)="downloadQR()">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                  d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+          Download PNG
+        </button>
+      </div>
+      <ng-template #qrPlaceholder>
+        <div class="qr-placeholder">
+          <div class="qr-loading-spinner"></div>
+          Generating QR Code...
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>
