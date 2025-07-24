@@ -142,8 +142,9 @@ npm run dev
 
 ### Authentication
 - **POST** `/api/auth/register`: User registration with email and password
-    request body:
+
     ```json
+    # request body
     {
       "email": "<user@example.com>",
       "password": "your-password",
@@ -153,29 +154,38 @@ npm run dev
     }
     ```
 - **POST** `/api/auth/login`: User login with email and password
-    request body:
+
     ```json
+    # request body
     {
       "email": "<user@example.com>",
       "password": "your-password"
     }
     ```
 - **POST** `/api/auth/google`: Google OAuth login
-    request body:
+
     ```json
+    # request body
     {
       "accessToken": "<google-id-token>"
     }
     ```
 ### URL Management
-- **POST** `/api/urls`: Create a new shortened URL
-    request body:
+- **POST** `/api/urls/shorten`: Create a new shortened URL
+
     ```json
+    # request body
     {
-      "originalUrl": "https://example.com",
+      "originalUrl": "https://example.com"
     }
     ```
+
 - **GET** `/api/urls/:shortCode`: Retrieve original URL by short code
+
+    ```json
+    # example http request
+    curl -X GET "http://localhost:3000/abc123"
+    ```
 
 ## 📁 Project Structure
 
