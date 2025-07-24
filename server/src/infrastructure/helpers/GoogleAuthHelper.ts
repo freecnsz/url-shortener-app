@@ -1,6 +1,6 @@
 import { OAuth2Client } from "google-auth-library";
 
-const client = new OAuth2Client(); // opsiyonel olarak clientId alabilir
+const client = new OAuth2Client(); // Google OAuth2 client, you may need to configure it with your client ID
 
 export interface GoogleTokenPayload {
   email: string;
@@ -16,7 +16,7 @@ export class GoogleAuthHelper {
   static async verifyIdToken(idToken: string): Promise<GoogleTokenPayload> {
     const ticket = await client.verifyIdToken({
       idToken,
-      audience: process.env.GOOGLE_CLIENT_ID, // .env içinde tanımlı olmalı
+      audience: process.env.GOOGLE_CLIENT_ID, // Specify the CLIENT_ID of the app that accesses the backend in .env
     }).catch((error) => {
       throw new Error(`Google token verification failed: ${error.message}`);
     });

@@ -48,7 +48,7 @@ export class QueueManager {
         throw new Error(`No handler found for queue: ${name}`);
       }
       
-      console.log(`🔄 Processing ${name} job: ${job.id}`);
+      console.log(`Processing ${name} job: ${job.id}`);
       await jobHandler.handle(job.data);
     }, {
       connection,
@@ -57,15 +57,15 @@ export class QueueManager {
 
     // Worker events
     worker.on('completed', (job) => {
-      console.log(`✅ ${name} job completed: ${job.id}`);
+      console.log(`${name} job completed: ${job.id}`);
     });
 
     worker.on('failed', (job, err) => {
-      console.error(`❌ ${name} job failed: ${job?.id}`, err.message);
+      console.error(`Failed to process ${name} job: ${job?.id}`, err.message);
     });
 
     this.workers.set(name, worker);
-    console.log(`✅ Queue '${name}' created with handler`);
+    console.log(`Queue '${name}' created with handler`);
   }
 
   // Job ekle
@@ -95,12 +95,12 @@ export class QueueManager {
     if (options.repeat) jobOptions.repeat = options.repeat;
 
     await queue.add(`${queueName}-job`, data, jobOptions);
-    console.log(`📝 Job added to '${queueName}' queue`);
+    console.log(`Job added to '${queueName}' queue`);
   }
 
   // Tüm queue'ları başlat
   public static initialize(): void {
-    console.log('🚀 Queue Manager initialized');
+    console.log('Queue Manager initialized');
   }
 
   // Queue statistics
@@ -126,8 +126,8 @@ export class QueueManager {
 
   // Temizlik
   public static async shutdown(): Promise<void> {
-    console.log('🛑 Shutting down queues and workers...');
-    
+    console.log('Shutting down queues and workers...');
+
     for (const worker of this.workers.values()) {
       await worker.close();
     }
@@ -139,7 +139,7 @@ export class QueueManager {
     this.queues.clear();
     this.workers.clear();
     this.handlers.clear();
-    
-    console.log('✅ Queue Manager shut down');
+
+    console.log('Queue Manager shut down');
   }
 }

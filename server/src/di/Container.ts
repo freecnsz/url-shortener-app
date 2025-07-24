@@ -44,7 +44,7 @@ export class Container {
     try {
       this.initializeDependencies();
     } catch (error) {
-      console.error('❌ Failed to initialize DI Container:', error);
+      console.error('Failed to initialize DI Container:', error);
       throw error;
     }
   }
@@ -57,25 +57,25 @@ export class Container {
   }
 
   private initializeDependencies(): void {
-    console.log('🔧 Initializing DI Container...');
-    
+    console.log('Initializing DI Container...');
+
     // 1. Infrastructure dependencies (temel bağımlılıklar önce)
     this.prismaClient = new PrismaClient({
       log: [appConfig.database.logLevel]
     });
     this.redisClient = RedisClient;
-    console.log('✅ Infrastructure dependencies initialized');
+    console.log('Infrastructure dependencies initialized');
 
     // 2. Helper dependencies
     this.passwordHasher = new bcryptHasher();
     this.jwtHelper = new JwtHelper();
     this.shortCodeGenerator = new shortCodeGeneratorHelper();
-    console.log('✅ Helper dependencies initialized');
+    console.log('Helper dependencies initialized');
 
     // 3. Repository dependencies
     this.userRepository = new PrismaUserRepository(this.prismaClient);
     this.urlRepository = new PrismaUrlRepository(this.prismaClient);
-    console.log('✅ Repository dependencies initialized');
+    console.log('Repository dependencies initialized');
 
     // 4. Use case dependencies (temel bağımlılıklar hazır olduktan sonra)
     this.createUserUseCase = new CreateUserUseCase(
@@ -102,9 +102,9 @@ export class Container {
       this.userRepository,
       this.jwtHelper
     );
-    
-    console.log('✅ Use case dependencies initialized');
-    console.log('🎉 DI Container initialization completed');
+
+    console.log('Use case dependencies initialized');
+    console.log('DI Container initialization completed');
   }
 
   // Getter methods for dependencies
@@ -158,19 +158,19 @@ export class Container {
 
   // Cleanup method for graceful shutdown
   public async cleanup(): Promise<void> {
-    console.log('🧹 Cleaning up DI Container...');
-    
+    console.log('Cleaning up DI Container...');
+
     try {
       // Close database connections
       await this.prismaClient.$disconnect();
-      console.log('✅ Prisma client disconnected');
-      
+      console.log('Prisma client disconnected');
+
       // Close Redis connections if needed
-      // await this.redisClient.disconnect();
-      
-      console.log('✅ DI Container cleanup completed');
+      await this.redisClient.disconnect();
+
+      console.log('DI Container cleanup completed');
     } catch (error) {
-      console.error('❌ Error during DI Container cleanup:', error);
+      console.error('Error during DI Container cleanup:', error);
       throw error;
     }
   }

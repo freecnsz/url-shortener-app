@@ -18,11 +18,11 @@ export class FullShortCodePoolJobHandler implements JobHandler {
     const codesToGenerate = this.desiredPoolSize - currentPoolSize;
 
     if (codesToGenerate <= 0) {
-      console.log('✅ Short code pool is already full');
+      console.log('Short code pool is already full');
       return;
     }
 
-    console.log(`🔧 Need to generate ${codesToGenerate} short codes...`);
+    console.log(`Need to generate ${codesToGenerate} short codes...`);
 
     let generatedCount = 0;
     const pipeline = client.pipeline();
@@ -47,17 +47,17 @@ export class FullShortCodePoolJobHandler implements JobHandler {
       if (uniqueCodes.length > 0) {
         pipeline.rpush(this.poolKey, ...uniqueCodes);
         generatedCount += uniqueCodes.length;
-        console.log(`📦 Generated ${uniqueCodes.length} unique codes (Total: ${generatedCount})`);
+        console.log(`Generated ${uniqueCodes.length} unique codes (Total: ${generatedCount})`);
       }
 
       // Eğer unique kod bulamadıysak biraz bekle
       if (uniqueCodes.length === 0) {
-        console.warn('⚠️ No unique codes found in this batch, waiting...');
+        console.warn('No unique codes found in this batch, waiting...');
         await new Promise(resolve => setTimeout(resolve, 1000));
       }
     }
 
     await pipeline.exec();
-    console.log(`✅ Pool filled! Added ${generatedCount} unique short codes`);
+    console.log(`Pool filled! Added ${generatedCount} unique short codes`);
   }
 }

@@ -18,12 +18,12 @@ export const setupRoutes = (app: Application): void => {
 
   // API routes
   app.use("/api/auth", AuthRoutes);
-  console.log("🔗 Auth routes setup completed");
+  console.log("Auth routes setup completed");
 
   // URL routes
   const UrlRoutes = require("./url.routes").default;
   app.use("/api/urls", UrlRoutes);
-  console.log("🔗 URL routes setup completed");
+  console.log("URL routes setup completed");
 
   const redirectRoutes = require("./redirect.routes").default;
   app.use("/", redirectRoutes);
@@ -36,5 +36,5 @@ export const setupRoutes = (app: Application): void => {
     });
   });
 
-  console.log("❗ 404 handler setup completed");
+  console.log("404 handler setup completed");
 };

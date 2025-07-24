@@ -24,7 +24,7 @@ export class ProcessClickJobHandler implements JobHandler {
     const { shortCode, rawRequest, urlData } = data;
     
     if (!urlData || !urlData.id) {
-      console.warn(`⚠️ No URL data for ${shortCode}, skipping processing`);
+      console.warn(`No URL data for ${shortCode}, skipping processing`);
       return;
     }
 
@@ -35,12 +35,12 @@ export class ProcessClickJobHandler implements JobHandler {
     try {
       // 1. Click sayacını artır
       const newClickCount = await RedisClient.increment(clickCountKey);
-      console.log(`📊 Click count for ${shortCode}: ${newClickCount}`);
+      console.log(`Click count for ${shortCode}: ${newClickCount}`);
 
       // 2. Her 10 tıklamada bir DB sync yap (batch update)
       if (newClickCount % 10 === 0) {
-        console.log(`🔄 Syncing to DB: ${shortCode} -> ${newClickCount} clicks`);
-        
+        console.log(`Syncing to DB: ${shortCode} -> ${newClickCount} clicks`);
+
         // URL'yi güncelle
         urlData.clickCount = newClickCount;
         urlData.lastClickedAt = new Date();
@@ -61,17 +61,17 @@ export class ProcessClickJobHandler implements JobHandler {
       // 4. Last click timestamp güncelle
       await RedisClient.set(lastClickKey, Date.now().toString(), 86400); // 24 saat
 
-      console.log(`✅ Click processed for ${shortCode} (count: ${newClickCount})`);
+      console.log(`Click processed for ${shortCode} (count: ${newClickCount})`);
 
     } catch (error) {
-      console.error(`❌ Failed to process click for ${shortCode}:`, error);
-      
+      console.error(`Failed to process click for ${shortCode}:`, error);
+
       // Hata durumunda da en azından click count'u artır
       try {
         await RedisClient.increment(clickCountKey);
         await RedisClient.set(lastClickKey, Date.now().toString(), 86400);
       } catch (fallbackError) {
-        console.error(`❌ Fallback click counting also failed:`, fallbackError);
+        console.error(`Fallback click counting also failed:`, fallbackError);
       }
     }
   }
