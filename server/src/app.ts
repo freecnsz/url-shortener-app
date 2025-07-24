@@ -15,7 +15,6 @@ const startApplication = async () => {
     console.log('🚀 Server created successfully');
     const server = app.listen(PORT, () => {
       console.log(`🚀 Server running on http://localhost:${PORT}`);
-      console.log(`📚 Swagger UI on http://localhost:${PORT}/api-docs`);
     });
 
     // Graceful shutdown

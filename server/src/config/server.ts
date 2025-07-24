@@ -1,6 +1,5 @@
 import express from 'express';
 import helmet from 'helmet';
-import { setupSwagger } from './swagger';
 import { setupRoutes } from '../presentation/routes';
 import { setupMiddleware } from '../presentation/middleware';
 import { QueueManager } from '../infrastructure/queues/QueueManager';
@@ -13,6 +12,21 @@ export const createServer = async (): Promise<express.Application> => {
   const app = express();
   console.log('🚀 Initializing server...');
 
+  // CORS - Manuel olarak tüm istekleri kabul et
+  app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    
+    // Preflight requests için
+    if (req.method === 'OPTIONS') {
+      res.sendStatus(200);
+    } else {
+      next();
+    }
+  });
+  console.log('🌍 CORS middleware applied - All origins allowed');
+
   // Security
   app.use(helmet());
   console.log('🔒 Security middleware (Helmet) applied');
@@ -22,9 +36,7 @@ export const createServer = async (): Promise<express.Application> => {
   app.use(express.urlencoded({ extended: true }));
   console.log('📦 Body parsing middleware applied');
 
-  // Swagger
-  setupSwagger(app);
-  console.log('📚 Swagger documentation setup completed');
+
 
   // Routes
   setupRoutes(app);
