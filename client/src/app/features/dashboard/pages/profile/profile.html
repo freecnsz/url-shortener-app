@@ -1,0 +1,304 @@
+<div class="profile-container">
+  <div class="profile-header">
+    <h1>Profile</h1>
+    <p>Manage your personal information and view your statistics</p>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="isLoading">
+    <div class="loading-spinner">
+      <i class="fas fa-spinner fa-spin"></i>
+    </div>
+    <p>Loading profile...</p>
+  </div>
+
+  <!-- Profile Content -->
+  <div class="profile-content" *ngIf="!isLoading">
+    <!-- Error Message -->
+    <div class="alert alert-error" *ngIf="errorMessage">
+      <i class="fas fa-exclamation-triangle"></i>
+      {{ errorMessage }}
+    </div>
+
+    <!-- Success Message -->
+    <div class="alert alert-success" *ngIf="successMessage">
+      <i class="fas fa-check-circle"></i>
+      {{ successMessage }}
+    </div>
+
+    <div class="profile-grid">
+      <!-- Profile Information Section -->
+      <div class="profile-info-section">
+        <div class="section-header">
+          <h2>
+            <i class="fas fa-user"></i>
+            Personal Information
+          </h2>
+          <div class="section-actions" *ngIf="!isEditMode">
+            <button class="btn-secondary" (click)="onEditProfile()">
+              <i class="fas fa-edit"></i>
+              Edit Profile
+            </button>
+          </div>
+        </div>
+
+        <!-- Avatar Section -->
+        <div class="avatar-section">
+          <div class="avatar-container">
+            <div class="avatar" *ngIf="profile.avatar">
+              <img [src]="profile.avatar" [alt]="getFullName()" />
+            </div>
+            <div class="avatar-placeholder" *ngIf="!profile.avatar">
+              {{ getInitials() }}
+            </div>
+            
+            <div class="avatar-overlay" *ngIf="isEditMode">
+              <input 
+                type="file" 
+                id="avatarInput" 
+                accept="image/*" 
+                (change)="onAvatarFileSelected($event)"
+                style="display: none;"
+              />
+              <button class="btn-avatar" (click)="onAvatarUpload()">
+                <i class="fas fa-camera"></i>
+              </button>
+              <button class="btn-avatar btn-remove" (click)="onRemoveAvatar()" *ngIf="profile.avatar">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+          
+          <div class="avatar-info" *ngIf="!isEditMode">
+            <h3>{{ getFullName() || 'User' }}</h3>
+            <p>{{ profile.email }}</p>
+          </div>
+        </div>
+
+        <!-- Profile Form -->
+        <form class="profile-form" *ngIf="isEditMode" (ngSubmit)="onSaveProfile()">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="firstName">First Name</label>
+              <input 
+                type="text" 
+                id="firstName" 
+                [(ngModel)]="profile.firstName" 
+                name="firstName"
+                class="form-control"
+                placeholder="Enter your first name"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="lastName">Last Name</label>
+              <input 
+                type="text" 
+                id="lastName" 
+                [(ngModel)]="profile.lastName" 
+                name="lastName"
+                class="form-control"
+                placeholder="Enter your last name"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input 
+              type="email" 
+              id="email" 
+              [(ngModel)]="profile.email" 
+              name="email"
+              class="form-control"
+              placeholder="Enter your email"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="bio">Bio (Optional)</label>
+            <textarea 
+              id="bio" 
+              [(ngModel)]="profile.bio" 
+              name="bio"
+              class="form-control"
+              placeholder="Tell us about yourself"
+              rows="3"
+              maxlength="500"
+            ></textarea>
+            <small class="form-help">{{ (profile.bio?.length || 0) }}/500 characters</small>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="website">Website (Optional)</label>
+              <input 
+                type="url" 
+                id="website" 
+                [(ngModel)]="profile.website" 
+                name="website"
+                class="form-control"
+                placeholder="https://your-website.com"
+              />
+            </div>
+            <div class="form-group">
+              <label for="location">Location (Optional)</label>
+              <input 
+                type="text" 
+                id="location" 
+                [(ngModel)]="profile.location" 
+                name="location"
+                class="form-control"
+                placeholder="City, Country"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="timezone">Timezone</label>
+            <select id="timezone" [(ngModel)]="profile.timezone" name="timezone" class="form-control">
+              <option *ngFor="let tz of timezones" [value]="tz">{{ tz }}</option>
+            </select>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" (click)="onCancelEdit()">
+              <i class="fas fa-times"></i>
+              Cancel
+            </button>
+            <button type="submit" class="btn-primary" [disabled]="isSaving">
+              <i class="fas fa-spinner fa-spin" *ngIf="isSaving"></i>
+              <i class="fas fa-save" *ngIf="!isSaving"></i>
+              {{ isSaving ? 'Saving...' : 'Save Changes' }}
+            </button>
+          </div>
+        </form>
+
+        <!-- Profile Display -->
+        <div class="profile-display" *ngIf="!isEditMode">
+          <div class="profile-field" *ngIf="profile.bio">
+            <label>Bio</label>
+            <p>{{ profile.bio }}</p>
+          </div>
+          
+          <div class="profile-field" *ngIf="profile.website">
+            <label>Website</label>
+            <a [href]="profile.website" target="_blank" rel="noopener noreferrer">
+              {{ profile.website }}
+              <i class="fas fa-external-link-alt"></i>
+            </a>
+          </div>
+          
+          <div class="profile-field" *ngIf="profile.location">
+            <label>Location</label>
+            <p>
+              <i class="fas fa-map-marker-alt"></i>
+              {{ profile.location }}
+            </p>
+          </div>
+          
+          <div class="profile-field">
+            <label>Timezone</label>
+            <p>
+              <i class="fas fa-clock"></i>
+              {{ profile.timezone }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Statistics Section -->
+      <div class="stats-section">
+        <div class="section-header">
+          <h2>
+            <i class="fas fa-chart-bar"></i>
+            Account Statistics
+          </h2>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-link"></i>
+            </div>
+            <div class="stat-content">
+              <h3>{{ formatNumber(stats.totalLinks) }}</h3>
+              <p>Total Links</p>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-mouse-pointer"></i>
+            </div>
+            <div class="stat-content">
+              <h3>{{ formatNumber(stats.totalClicks) }}</h3>
+              <p>Total Clicks</p>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-folder"></i>
+            </div>
+            <div class="stat-content">
+              <h3>{{ stats.totalFolders }}</h3>
+              <p>Folders</p>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-calendar-alt"></i>
+            </div>
+            <div class="stat-content">
+              <h3>{{ getAccountAgeText() }}</h3>
+              <p>Account Age</p>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-desktop"></i>
+            </div>
+            <div class="stat-content">
+              <h3>{{ stats.mostUsedDevice }}</h3>
+              <p>Top Device</p>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-globe"></i>
+            </div>
+            <div class="stat-content">
+              <h3>{{ stats.topLocation }}</h3>
+              <p>Top Location</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Additional Info -->
+        <div class="additional-info" *ngIf="currentUser">
+          <h3>Account Details</h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <label>Member Since</label>
+              <span>{{ getCurrentDate() | date:'mediumDate' }}</span>
+            </div>
+            <div class="info-item">
+              <label>Last Login</label>
+              <span>{{ getCurrentDate() | date:'medium' }}</span>
+            </div>
+            <div class="info-item">
+              <label>Account Status</label>
+              <span class="status-badge active">Active</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

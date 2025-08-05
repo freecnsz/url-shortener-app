@@ -1,0 +1,44 @@
+<div class="folder-card" [ngClass]="getColorClass()" (click)="onFolderClick()">
+  <div class="folder-header">
+    <div class="folder-icon">
+      <i class="fas fa-folder"></i>
+    </div>
+    
+    <div class="folder-actions">
+      <div class="options-dropdown">
+        <button class="action-btn options-btn" (click)="toggleOptions($event)"
+                [class.active]="showOptions">
+          <i class="fas fa-ellipsis-v"></i>
+        </button>
+        
+        <div class="dropdown-menu" *ngIf="showOptions">
+          <button class="dropdown-item" (click)="onEditClick($event)">
+            <i class="fas fa-edit"></i> Edit
+          </button>
+          <button class="dropdown-item danger" (click)="onDeleteClick($event)">
+            <i class="fas fa-trash"></i> Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="folder-content">
+    <h3 class="folder-name">{{ folder.name }}</h3>
+    <p class="folder-description" *ngIf="folder.description">
+      {{ folder.description }}
+    </p>
+  </div>
+  
+  <div class="folder-stats">
+    <div class="stat-item">
+      <i class="fas fa-link"></i>
+      <span>{{ folder.linkCount }} links</span>
+    </div>
+    
+    <div class="stat-item">
+      <i class="fas fa-calendar"></i>
+      <span>{{ folder.createdAt | date:'shortDate' }}</span>
+    </div>
+  </div>
+</div>

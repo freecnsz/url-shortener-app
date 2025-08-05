@@ -1,0 +1,72 @@
+<div class="link-card" (click)="onLinkClick()">
+  <div class="link-header">
+    <div class="link-info">
+      <h3 class="link-title">{{ link.title || 'Untitled Link' }}</h3>
+      <p class="link-description" *ngIf="link.description">{{ link.description }}</p>
+    </div>
+    
+    <div class="link-actions">
+      <button class="action-btn copy-btn" (click)="onCopyClick($event)" 
+              title="Copy to clipboard">
+        <i class="fas fa-copy"></i>
+      </button>
+      
+      <div class="options-dropdown">
+        <button class="action-btn options-btn" (click)="toggleOptions($event)"
+                [class.active]="showOptions">
+          <i class="fas fa-ellipsis-v"></i>
+        </button>
+        
+        <div class="dropdown-menu" *ngIf="showOptions">
+          <button class="dropdown-item" (click)="onEditClick($event)">
+            <i class="fas fa-edit"></i> Edit
+          </button>
+          <button class="dropdown-item" (click)="onQrClick($event)">
+            <i class="fas fa-qrcode"></i> QR Code
+          </button>
+          <button class="dropdown-item danger" (click)="onDeleteClick($event)">
+            <i class="fas fa-trash"></i> Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="link-urls">
+    <div class="original-url">
+      <span class="url-label">Original:</span>
+      <span class="url-text" [title]="link.originalUrl">
+        {{ truncateUrl(link.originalUrl) }}
+      </span>
+    </div>
+    
+    <div class="short-url">
+      <span class="url-label">Short:</span>
+      <span class="url-text short" [title]="link.shortUrl">
+        {{ link.shortUrl }}
+      </span>
+    </div>
+  </div>
+  
+  <div class="link-stats">
+    <div class="stat-item">
+      <i class="fas fa-mouse-pointer"></i>
+      <span>{{ link.clicks }} clicks</span>
+    </div>
+    
+    <div class="stat-item" *ngIf="showFolder && link.folder">
+      <i class="fas fa-folder"></i>
+      <span>{{ link.folder }}</span>
+    </div>
+    
+    <div class="stat-item">
+      <i class="fas fa-calendar"></i>
+      <span>{{ getTimeSince(link.createdAt) }}</span>
+    </div>
+  </div>
+  
+  <div class="link-status" [class.active]="link.isActive">
+    <span class="status-indicator"></span>
+    <span class="status-text">{{ link.isActive ? 'Active' : 'Inactive' }}</span>
+  </div>
+</div>
