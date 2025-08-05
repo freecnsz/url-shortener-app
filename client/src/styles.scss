@@ -17,8 +17,20 @@
   
   /* Success/Warning/Error */
   --success-color: #10b981;         /* Emerald green */
+  --success-color-light: #d1fae5;         /* Light emerald background */
+  --success-color-dark: #065f46;          /* Dark emerald text */
   --warning-color: #f59e0b;         /* Amber */
   --error-color: #ef4444;           /* Red */
+  
+  /* Orange/Yellow Gradient Palette */
+  --orange-primary: #ff6b6b;        /* Coral red */
+  --orange-secondary: #ffa500;      /* Orange */
+  --orange-light: #ffb74d;          /* Light orange */
+  --orange-dark: #e65100;           /* Dark orange */
+  --orange-gradient: linear-gradient(135deg, #ff6b6b, #ffa500);
+  --orange-gradient-hover: linear-gradient(135deg, #ff5252, #ff9800);
+  --orange-alpha: rgba(255, 107, 107, 0.1);
+  --orange-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
   
   /* Backgrounds */
   --background-color: #ffffff;      /* Pure white */
@@ -26,6 +38,7 @@
   --surface-color: #f1f5f9;         /* Surface gray */
   --card-color: #ffffff;            /* Card white */
   --hover-bg: #f1f5f9;             /* Hover background */
+  --background-hover: #f1f5f9;     /* Background hover state */
   
   /* Text Colors */
   --text-primary: #1e293b;          /* Dark slate */
@@ -64,8 +77,20 @@
   
   /* Success/Warning/Error */
   --success-color: #34d399;         /* Light emerald */
+  --success-color-light: #064e3b;         /* Dark emerald background */
+  --success-color-dark: #6ee7b7;          /* Light emerald text */
   --warning-color: #fbbf24;         /* Light amber */
   --error-color: #f87171;           /* Light red */
+  
+  /* Orange/Yellow Gradient Palette */
+  --orange-primary: #ff6b6b;        /* Coral red */
+  --orange-secondary: #ffa500;      /* Orange */
+  --orange-light: #ffcc80;          /* Light orange for dark theme */
+  --orange-dark: #bf360c;           /* Dark orange */
+  --orange-gradient: linear-gradient(135deg, #ff6b6b, #ffa500);
+  --orange-gradient-hover: linear-gradient(135deg, #ff5252, #ff9800);
+  --orange-alpha: rgba(255, 107, 107, 0.15);
+  --orange-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
   
   /* Backgrounds */
   --background-color: #0f172a;      /* Deep navy */
@@ -73,6 +98,7 @@
   --surface-color: #334155;         /* Medium slate */
   --card-color: #1e293b;            /* Card dark slate */
   --hover-bg: #334155;             /* Hover background */
+  --background-hover: #334155;     /* Background hover state */
   
   /* Text Colors */
   --text-primary: #f1f5f9;          /* Light text */
@@ -285,4 +311,70 @@ body {
 
 .hover-glow:hover {
   box-shadow: var(--shadow-blue);
+}
+
+/* Orange/Yellow Themed Components */
+.btn-orange {
+  background: var(--orange-gradient);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+
+  &:hover {
+    background: var(--orange-gradient-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--orange-shadow);
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.btn-orange-outline {
+  background: transparent;
+  color: var(--orange-primary);
+  border: 1px solid var(--orange-primary);
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: var(--orange-gradient);
+    color: white;
+    border-color: transparent;
+    transform: translateY(-1px);
+    box-shadow: var(--orange-shadow);
+  }
+}
+
+.text-orange {
+  color: var(--orange-primary);
+}
+
+.bg-orange {
+  background: var(--orange-gradient);
+}
+
+.bg-orange-light {
+  background: var(--orange-alpha);
+}
+
+.border-orange {
+  border-color: var(--orange-primary);
+}
+
+.shadow-orange {
+  box-shadow: var(--orange-shadow);
 }

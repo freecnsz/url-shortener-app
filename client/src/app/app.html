@@ -1,65 +1,63 @@
-<div class="app-layout">
-  <header>
-    <h1>{{ title }}</h1>
+<div class="app-layout" [class.error-page-layout]="isErrorPage">
+  <!-- Header - Hidden on error pages and dashboard -->
+  <header class="app-header" *ngIf="!isErrorPage && !isDashboardPage">
+    <div class="header-content">
+      <div class="logo">
+        <h2 routerLink="/">{{ title }}</h2>
+      </div>
+      
+      <div class="header-actions">
+        <!-- Auth buttons for non-logged in users -->
+        <div class="auth-buttons" *ngIf="!currentUser">
+          <button class="btn-secondary" routerLink="/auth/login">Login</button>
+          <button class="btn-secondary" routerLink="/auth/register">Sign Up</button>
+        </div>
+        
+        <!-- User menu for logged in users -->
+        <div class="user-menu" *ngIf="currentUser">
+          <div class="user-info">
+            <span class="user-name">{{ currentUser.name }}</span>
+            <button class="btn-secondary" routerLink="/dashboard">Dashboard</button>
+            <button class="btn-outline" (click)="logout()">Logout</button>
+          </div>
+        </div>
+        
+        <app-theme-toggle></app-theme-toggle>
+      </div>
+    </div>
   </header>
 
-  <main class="main-content">
+  <main class="main-content" [class.full-screen]="isErrorPage || isDashboardPage">
     <router-outlet></router-outlet>
   </main>
 
-  <footer class="app-footer">
+  <footer class="app-footer" *ngIf="!isErrorPage && !isDashboardPage">
     <div class="footer-content">
-      <div class="footer-section">
+      <div class="footer-simple">
         <div class="footer-brand">
           <div class="footer-brand-icon">🔗</div>
-          <span>ShortLink</span>
+          <span>LinkHub</span>
         </div>
-        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">
-          Fast, secure, and reliable URL shortening service
+        <p class="footer-description">
+          Fast and reliable URL shortening service
         </p>
-      </div>
-      
-      <div class="footer-section">
-        <div class="footer-title">Product</div>
         <div class="footer-links">
-          <a href="#" class="footer-link">Features</a>
-          <a href="#" class="footer-link">API</a>
-          <a href="#" class="footer-link">Analytics</a>
-          <a href="#" class="footer-link">Custom Domains</a>
-        </div>
-      </div>
-      
-      <div class="footer-section">
-        <div class="footer-title">Company</div>
-        <div class="footer-links">
-          <a href="#" class="footer-link">About</a>
-          <a href="#" class="footer-link">Blog</a>
+          <a href="#" class="footer-link">Privacy</a>
+          <a href="#" class="footer-link">Terms</a>
           <a href="#" class="footer-link">Contact</a>
-          <a href="#" class="footer-link">Support</a>
-        </div>
-      </div>
-      
-      <div class="footer-section">
-        <div class="footer-title">Connect</div>
-        <div class="footer-social">
-          <a href="#" class="social-link" aria-label="Twitter">🐦</a>
-          <a href="#" class="social-link" aria-label="GitHub">🐙</a>
-          <a href="#" class="social-link" aria-label="LinkedIn">💼</a>
-        </div>
-      </div>
-    </div>
-    
-    <div class="footer-bottom">
-      <div class="footer-bottom-content">
-        <div class="footer-copyright">
-          © 2025 ShortLink. All rights reserved.
-        </div>
-        <div class="footer-legal">
-          <a href="#">Privacy Policy</a>
-          <a href="#">Terms of Service</a>
-          <a href="#">Cookie Policy</a>
         </div>
       </div>
     </div>
   </footer>
 </div>
+
+<!-- Logout Confirmation Dialog -->
+<app-confirmation-dialog
+  [isVisible]="showLogoutDialog"
+  title="Confirm Logout"
+  message="Are you sure you want to log out? You will need to sign in again to access your dashboard."
+  confirmText="Yes, Logout"
+  cancelText="Cancel"
+  (confirmed)="onLogoutConfirmed()"
+  (cancelled)="onLogoutCancelled()">
+</app-confirmation-dialog>
