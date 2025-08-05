@@ -1,0 +1,87 @@
+<div class="maintenance-page">
+  <div class="maintenance-container">
+    <div class="maintenance-content">
+      <!-- Maintenance Illustration -->
+      <div class="maintenance-illustration">
+        <div class="maintenance-icon">
+          <i class="fas fa-tools"></i>
+        </div>
+        <div class="progress-ring">
+          <svg class="progress-ring-svg" width="120" height="120">
+            <circle class="progress-ring-circle-bg" cx="60" cy="60" r="50"></circle>
+            <circle class="progress-ring-circle" cx="60" cy="60" r="50"></circle>
+          </svg>
+        </div>
+      </div>
+      
+      <!-- Maintenance Message -->
+      <div class="maintenance-message">
+        <h1>We'll be back soon!</h1>
+        <p>LinkHub is currently undergoing scheduled maintenance to improve our services. We apologize for any inconvenience and appreciate your patience.</p>
+      </div>
+      
+      <!-- Status Updates -->
+      <div class="maintenance-status">
+        <div class="status-header">
+          <h3>What's happening?</h3>
+        </div>
+        <div class="status-timeline">
+          <div class="status-item completed">
+            <div class="status-dot"></div>
+            <div class="status-content">
+              <span class="status-title">Database optimization</span>
+              <span class="status-time">Completed</span>
+            </div>
+          </div>
+          <div class="status-item in-progress">
+            <div class="status-dot"></div>
+            <div class="status-content">
+              <span class="status-title">Server updates</span>
+              <span class="status-time">In progress</span>
+            </div>
+          </div>
+          <div class="status-item pending">
+            <div class="status-dot"></div>
+            <div class="status-content">
+              <span class="status-title">Testing & verification</span>
+              <span class="status-time">Pending</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Expected Time -->
+      <div class="maintenance-eta">
+        <div class="eta-info">
+          <i class="fas fa-clock"></i>
+          <span>Expected completion: <strong>Within 2 hours</strong></span>
+        </div>
+        <div class="current-time">
+          <span>Current time: {{ currentTime }}</span>
+        </div>
+      </div>
+      
+      <!-- Action Buttons -->
+      <div class="maintenance-actions">
+        <button class="btn btn-primary" (click)="refreshPage()">
+          <i class="fas fa-redo"></i>
+          Check Again
+        </button>
+        <a class="btn btn-outline" href="https://status.linkhub.ly" target="_blank">
+          <i class="fas fa-external-link-alt"></i>
+          Status Page
+        </a>
+      </div>
+      
+      <!-- Contact Info -->
+      <div class="maintenance-contact">
+        <p>For urgent matters, contact us at <a href="mailto:support&#64;linkhub.ly">support&#64;linkhub.ly</a></p>
+        <div class="social-links">
+          <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+          <a href="#" target="_blank"><i class="fab fa-facebook"></i></a>
+          <a href="#" target="_blank"><i class="fab fa-linkedin"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,156 @@
+.dialog-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.dialog-container {
+  background: var(--background-color);
+  border-radius: 16px;
+  padding: 0;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.15),
+    0 8px 16px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-color);
+  animation: slideUp 0.3s ease-out;
+}
+
+.dialog-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem 2rem 1rem;
+}
+
+.dialog-icon {
+  width: 48px;
+  height: 48px;
+  background: var(--orange-gradient);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.dialog-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.dialog-body {
+  padding: 0 2rem 2rem;
+}
+
+.dialog-message {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1.5rem 2rem;
+  border-top: 1px solid var(--border-color);
+  background: var(--background-secondary);
+  border-radius: 0 0 16px 16px;
+}
+
+.btn-cancel,
+.btn-confirm {
+  flex: 1;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.btn-cancel {
+  background: var(--background-color);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+
+  &:hover {
+    background: var(--background-hover);
+    color: var(--text-primary);
+    border-color: var(--primary-color);
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 20%, transparent);
+  }
+}
+
+.btn-confirm {
+  background: var(--orange-gradient);
+  color: white;
+  border: 1px solid transparent;
+
+  &:hover {
+    background: var(--orange-gradient-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--orange-shadow);
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Dark theme adjustments */
+@media (prefers-color-scheme: dark) {
+  .dialog-backdrop {
+    background: rgba(0, 0, 0, 0.7);
+  }
+  
+  .dialog-container {
+    box-shadow: 
+      0 20px 40px rgba(0, 0, 0, 0.4),
+      0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+}

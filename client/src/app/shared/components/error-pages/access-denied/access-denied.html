@@ -1,0 +1,51 @@
+<div class="error-page access-denied">
+  <div class="error-container">
+    <div class="error-content">
+      <!-- Error Illustration -->
+      <div class="error-illustration">
+        <div class="error-number">403</div>
+        <div class="error-icon">
+          <i class="fas fa-lock"></i>
+        </div>
+      </div>
+      
+      <!-- Error Message -->
+      <div class="error-message">
+        <h1>Access Denied</h1>
+        <p>You don't have permission to access this page. This area is restricted to authorized users only.</p>
+      </div>
+      
+      <!-- Reasons -->
+      <div class="error-reasons">
+        <h3>Possible reasons:</h3>
+        <ul>
+          <li>You need to log in to access this content</li>
+          <li>Your account doesn't have the required permissions</li>
+          <li>This page is for premium users only</li>
+          <li>Your session may have expired</li>
+        </ul>
+      </div>
+      
+      <!-- Action Buttons -->
+      <div class="error-actions">
+        <button class="btn btn-primary" routerLink="/auth/login">
+          <i class="fas fa-sign-in-alt"></i>
+          Sign In
+        </button>
+        <button class="btn btn-secondary" routerLink="/">
+          <i class="fas fa-home"></i>
+          Go Home
+        </button>
+        <button class="btn btn-outline" (click)="goBack()">
+          <i class="fas fa-arrow-left"></i>
+          Go Back
+        </button>
+      </div>
+      
+      <!-- Help Section -->
+      <div class="error-help">
+        <p>Need help? <a href="mailto:support@linkhub.ly">Contact Support</a> or check our <a routerLink="/help">Help Center</a></p>
+      </div>
+    </div>
+  </div>
+</div>

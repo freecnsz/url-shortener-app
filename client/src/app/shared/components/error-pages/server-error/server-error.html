@@ -1,0 +1,53 @@
+<div class="error-page server-error">
+  <div class="error-container">
+    <div class="error-content">
+      <!-- Error Illustration -->
+      <div class="error-illustration">
+        <div class="error-number">500</div>
+        <div class="error-icon">
+          <i class="fas fa-server"></i>
+        </div>
+      </div>
+      
+      <!-- Error Message -->
+      <div class="error-message">
+        <h1>Server Error</h1>
+        <p>Oops! Something went wrong on our end. Our servers are experiencing some technical difficulties. Please try again in a few moments.</p>
+      </div>
+      
+      <!-- Status Info -->
+      <div class="error-status">
+        <div class="status-item">
+          <i class="fas fa-exclamation-triangle"></i>
+          <span>Our team has been notified</span>
+        </div>
+        <div class="status-item">
+          <i class="fas fa-clock"></i>
+          <span>This issue is usually resolved quickly</span>
+        </div>
+      </div>
+      
+      <!-- Action Buttons -->
+      <div class="error-actions">
+        <button class="btn btn-primary" (click)="refreshPage()">
+          <i class="fas fa-redo"></i>
+          Try Again
+        </button>
+        <button class="btn btn-secondary" routerLink="/">
+          <i class="fas fa-home"></i>
+          Go Home
+        </button>
+        <button class="btn btn-outline" (click)="goBack()">
+          <i class="fas fa-arrow-left"></i>
+          Go Back
+        </button>
+      </div>
+      
+      <!-- Help Section -->
+      <div class="error-help">
+        <p>If the problem persists, please <a href="mailto:support@linkhub.ly">contact our support team</a></p>
+        <p class="error-code">Error ID: SRV-{{ getCurrentTimestamp() }}</p>
+      </div>
+    </div>
+  </div>
+</div>
