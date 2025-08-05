@@ -21,6 +21,8 @@ export class UrlFormComponent {
   url: string = '';
   showSuccess: boolean = false;
   errorMessage: string = '';
+  submitButtonText: string = 'Shorten URL';
+  isSubmitting: boolean = false;
 
   constructor(
     private urlService: UrlService,
@@ -30,11 +32,42 @@ export class UrlFormComponent {
   onSubmit() {
     if (this.url.trim() && this.isValidUrl(this.url.trim())) {
       this.errorMessage = '';
+      this.isSubmitting = true;
+      this.submitButtonText = 'Shortening...';
+      this.loadingStateChanged.emit(true);
+      
+      // Emit URL for parent component to handle
       this.urlSubmitted.emit(this.url.trim());
-      this.showSuccessAnimation();
     } else {
-      this.errorMessage = 'Please enter a valid URL';
+      this.errorMessage = 'Please enter a valid URL (e.g., https://example.com)';
+      this.resetSubmitState();
     }
+  }
+
+  // Method to be called by parent when API response is received
+  onApiSuccess() {
+    this.submitButtonText = 'Success!';
+    this.showSuccess = true;
+    this.isSubmitting = false;
+    this.loadingStateChanged.emit(false);
+    
+    setTimeout(() => {
+      this.resetSubmitState();
+      this.cdr.detectChanges();
+    }, 2000);
+  }
+
+  // Method to be called by parent when API fails
+  onApiError(errorMessage?: string) {
+    this.errorMessage = errorMessage || 'Failed to shorten URL. Please try again.';
+    this.resetSubmitState();
+    this.loadingStateChanged.emit(false);
+  }
+
+  private resetSubmitState() {
+    this.submitButtonText = 'Shorten URL';
+    this.showSuccess = false;
+    this.isSubmitting = false;
   }
 
   private isValidUrl(string: string): boolean {
@@ -53,17 +86,11 @@ export class UrlFormComponent {
     }
   }
 
-  showSuccessAnimation() {
-    this.showSuccess = true;
-    setTimeout(() => {
-      this.showSuccess = false;
-      this.cdr.detectChanges();
-    }, 2000);
-  }
-
   reset() {
     this.url = '';
     this.errorMessage = '';
-    this.showSuccess = false;
+    this.resetSubmitState();
+    this.loadingStateChanged.emit(false);
+    this.cdr.detectChanges();
   }
 }

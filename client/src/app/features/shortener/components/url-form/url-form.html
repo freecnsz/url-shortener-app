@@ -2,10 +2,10 @@
   <form (ngSubmit)="onSubmit()" #urlForm="ngForm">
     <div class="form-header">
       <h1 class="form-title" [ngClass]="{ 'compact': isCompact }">
-        {{ isCompact ? 'ShortLink' : 'Shorten Your URLs' }}
+        {{ isCompact ? 'Create Link' : 'URL Shortener' }}
       </h1>
       <p class="form-subtitle" [ngClass]="{ 'compact': isCompact }" *ngIf="!isCompact">
-        Create short, shareable links in seconds
+        Make long links short and shareable
       </p>
     </div>
 
@@ -23,10 +23,10 @@
           [disabled]="isLoading"
           (keydown.enter)="onSubmit()"
         />
-        <label class="input-label">Enter your long URL here</label>
+        <label class="input-label">Paste your long URL here</label>
         
-        <div class="input-validation" *ngIf="urlInput.invalid && urlInput.touched">
-          <span class="validation-message">Please enter a valid URL</span>
+        <div class="input-validation" *ngIf="errorMessage">
+          <span class="validation-message">{{ errorMessage }}</span>
         </div>
       </div>
 
@@ -35,27 +35,35 @@
           <button
             type="submit"
             class="submit-btn"
-            [ngClass]="{ 'compact': isCompact, 'loading': isLoading }"
-            [disabled]="urlForm.invalid || isLoading"
+            [ngClass]="{ 
+              'compact': isCompact, 
+              'loading': isSubmitting,
+              'success': showSuccess 
+            }"
+            [disabled]="urlForm.invalid || isSubmitting"
           >
-            <span class="btn-text" *ngIf="!isLoading">
+            <span class="btn-text" *ngIf="!isSubmitting && !showSuccess">
               {{ isCompact ? 'Shorten' : 'Shorten URL' }}
             </span>
-            <span class="btn-text" *ngIf="isLoading">
-              Processing...
+            <span class="btn-text loading" *ngIf="isSubmitting">
+              <i class="fas fa-spinner fa-spin"></i>
+              Shortening...
+            </span>
+            <span class="btn-text success" *ngIf="showSuccess">
+              <i class="fas fa-check"></i>
+              Success!
             </span>
           </button>
-          
-          <div class="success-animation" [ngClass]="{ 'show': showSuccess }">
-            ✓ Success!
-          </div>
+        </div>
+        
+        <!-- Error Message -->
+        <div class="error-message" *ngIf="errorMessage" [ngClass]="{ 'show': errorMessage }">
+          <i class="fas fa-exclamation-circle"></i>
+          {{ errorMessage }}
         </div>
       </div>
     </div>
 
-    <!-- Floating decorative elements -->
-    <div class="floating-element" *ngIf="!isCompact">🔗</div>
-    <div class="floating-element" *ngIf="!isCompact">⚡</div>
-    <div class="floating-element" *ngIf="!isCompact">🚀</div>
+    <!-- Floating decorative elements - removed for cleaner look -->
   </form>
 </div>

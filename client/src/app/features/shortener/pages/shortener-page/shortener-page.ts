@@ -1,5 +1,5 @@
 // src/app/features/shortener/pages/shortener-page/shortener-page.component.ts
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UrlFormComponent } from '../../components/url-form/url-form';
 import { UrlResultComponent } from '../../components/url-result/url-result';
@@ -19,6 +19,8 @@ interface UrlStats {
   styleUrl: './shortener-page.scss'
 })
 export class ShortenerPageComponent {
+  @ViewChild(UrlFormComponent) urlFormComponent!: UrlFormComponent;
+  
   currentState: string = 'state-initial';
   isLoading: boolean = false;
   hasResult: boolean = false;
@@ -33,38 +35,43 @@ export class ShortenerPageComponent {
     private cdr: ChangeDetectorRef
   ) {}
 
-  onUrlSubmit(url: string) {
+  async onUrlSubmit(url: string) {
     this.originalUrl = url;
     this.isLoading = true;
     this.currentState = 'state-loading';
-    this.showResult = true; // Show loading state immediately
+    this.showResult = true;
     
-    // Simulate realistic API timing
-    setTimeout(async () => {
-      try {
-        const result = await this.urlService.shortenUrl(url);
-        
-        this.shortenedUrl = result.shortUrl;
-        this.urlStats = {
-          clicks: 0,
-          created: new Date()
-        };
-        
-        this.isLoading = false;
-        this.hasResult = true;
-        this.currentState = 'state-success';
-        
-        this.cdr.detectChanges();
-        
-      } catch (error) {
-        this.isLoading = false;
-        this.showResult = false;
-        this.currentState = 'state-initial';
-        console.error('Error shortening URL:', error);
-
-        this.cdr.detectChanges();
-      }
-    }, 2800);
+    try {
+      // Call the actual API
+      const result = await this.urlService.shortenUrl(url);
+      
+      this.shortenedUrl = result.shortUrl;
+      this.urlStats = {
+        clicks: 0,
+        created: new Date()
+      };
+      
+      this.isLoading = false;
+      this.hasResult = true;
+      this.currentState = 'state-success';
+      
+      // Notify form component of success
+      this.urlFormComponent.onApiSuccess();
+      
+      this.cdr.detectChanges();
+      
+    } catch (error: any) {
+      this.isLoading = false;
+      this.showResult = false;
+      this.currentState = 'state-initial';
+      
+      // Notify form component of error
+      const errorMessage = error.message || 'Failed to shorten URL. Please try again.';
+      this.urlFormComponent.onApiError(errorMessage);
+      
+      console.error('Error shortening URL:', error);
+      this.cdr.detectChanges();
+    }
   }
 
   onNewUrlRequest() {
@@ -76,6 +83,9 @@ export class ShortenerPageComponent {
     this.originalUrl = '';
     this.shortenedUrl = '';
     this.urlStats = null;
+    
+    // Reset form component
+    this.urlFormComponent.reset();
     
     this.cdr.detectChanges();
   }
