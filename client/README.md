@@ -1,6 +1,6 @@
-# URL Shortener - Frontend (Angular)
+# LinkHub - Frontend (Angular)
 
-This project is the Angular-based frontend for a URL shortening application. Built with modern Angular 20 framework, it allows users to shorten long URLs with a clean and intuitive interface.
+This project is the Angular-based frontend for LinkHub, a modern URL shortening application. Built with Angular 20 framework, it provides users with a clean and intuitive interface to shorten, manage, and track their URLs.
 
 ## 🌐 Live Demo
 
